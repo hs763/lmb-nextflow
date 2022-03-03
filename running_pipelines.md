@@ -17,7 +17,7 @@ Strandedness options: 'unstranded', 'forward', 'reverse'
 
 Example Command:
 
-    nextflow run nf-core/rnaseq -r 3.4 --input samplesheet.csv --genome GRCh38_v102 -profile singularity -config lmb.config -bg
+    nextflow run nf-core/rnaseq -r 3.5 --input samplesheet.csv --genome GRCh38_v102 -config /public/singularity/containers/nextflow/lmb-nextflow/lmb.config -bg
     
 ## Fetch NGS
 
