@@ -1,9 +1,8 @@
 # lmb-singularity-list
 A list of Singularity containers downloaded to the LMB compute cluster
 
-List of containers
-==================
-
+Nextflow / nf-core containers
+=============================
 
 Binary Files
 ------------
@@ -60,10 +59,15 @@ depot.galaxyproject.org-singularity-mulled-v2-5f89fe0cd045cb1d615630b9261a1d1794
 nfcore-chipseq-1.2.2.img
 
 
+Recipe files
+------------
 
 
+Other (non-Nextflow containers)
+===============================
 
-
+Binary Files
+------------
 
 Recipe files
 ------------
