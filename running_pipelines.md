@@ -34,7 +34,7 @@ Create a file listing on a separate line all the ids to process.
 
 **Example Nextflow command:**
 
-    nextflow run nf-core/fetchngs -r 1.5 --input to_download.txt -config lmb.config
+    nextflow run nf-core/fetchngs -r 1.5 --input to_download.txt -config /public/singularity/containers/nextflow/lmb-nextflow/lmb.config -bg
 
 ### Output
 [Click here for output overview](https://nf-co.re/fetchngs/1.5/output)
