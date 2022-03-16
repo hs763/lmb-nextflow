@@ -10,12 +10,17 @@
 # GTF link (if not ENSEMBL)
 # Processing columns (1 or 0)
 
+# Need in path:
+# extract_splice_sites.py
+
 import os
+import glob
 
 VERSION = "0.0.1_dev"
 
 current_working_directory = os.getcwd()
-output_directory = current_working_directory
+genome_ref_outdir = current_working_directory
+genome_ref_outdir = genome_ref_outdir + '/Genome_References/'
 
 
 
@@ -45,7 +50,7 @@ def download_ensembl_fasta(species, assembly, release):
 # download_ensembl_gtf
 ####################################
 def download_ensembl_gtf(species, assembly, release):
-    print('Downloading GTF file: ' + species + ' ' + assembly + ' (' + str(release) + ')')
+    print('Downloading GTF file: ' + species + ' ' + assembly + ' (' + release + ')')
 
     ensembl_base = 'http://ftp.ensembl.org/pub/release-'
     download_folder = ensembl_base + release + '/gtf/' + species + '/'
@@ -54,6 +59,15 @@ def download_ensembl_gtf(species, assembly, release):
     command = 'lftp -e "mget *.' + release + '.gtf.gz; bye" '
     command = command + download_folder
     os.system(command)
+
+
+
+####################################
+# make_non_existant_dir
+####################################
+def make_non_existant_dir(dir_path):
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
 
 
 
@@ -66,16 +80,61 @@ def download_ensembl_gtf(species, assembly, release):
 
 def main():
 
-    print(output_directory)
+
+    # Import genomes to download list (csv file)
+
+    print("Writing genome files to " + genome_ref_outdir)
+    #make_non_existant_dir(output_directory)
 
     species = 'saccharomyces_cerevisiae'
     assembly = 'R64-1-1'
     release = 105
-
     release = str(release)
+    database_source = 'Ensembl'
 
-    #download_ensembl_fasta(species, assembly, release)
-    #download_ensembl_gtf(species, assembly, release)
+    print('Genome: ' + species + ' ' + assembly + ' (' + release + ')')
+    release_outsubdir = '/'.join([genome_ref_outdir, database_source, species, assembly, 'Release_' + release])
+
+    # Download FASTA
+    data_outsubdir = release_outsubdir + '/FASTA/'
+
+    if not os.path.exists(data_outsubdir):
+        os.makedirs(data_outsubdir)
+        os.chdir(data_outsubdir)
+        download_ensembl_fasta(species, assembly, release)
+        os.system('gunzip *.fa.gz')
+    else:
+        print('Skipping - FASTQ folder already exists: ' + data_outsubdir)
+
+
+    # Download GTF
+    data_outsubdir = release_outsubdir + '/GTF/'
+
+    if not os.path.exists(data_outsubdir):
+        os.makedirs(data_outsubdir)
+        os.chdir(data_outsubdir)
+        download_ensembl_gtf(species, assembly, release)
+        os.system('gunzip *.gz')
+
+        #Extract splice sites and exons - create subroutine - HISAT2
+        #gtf_file = glob.glob('*.gtf')[0]
+        #splice_site_file = gtf_file[:-3] + 'ss'
+        #exon_file = gtf_file[:-3] + 'exon'
+
+        #command = f'extract_splice_sites.py {gtf_file} > {splice_site_file}'
+        #os.system(command)
+
+        #command = f'extract_exons.py {gtf_file} > {exon_file}'
+        #os.system(command)
+
+
+    else:
+        print('Skipping - FASTQ folder already exists: ' + data_outsubdir)
+
+
+
+    print('Done')
+
 
 
 if __name__ == "__main__":
