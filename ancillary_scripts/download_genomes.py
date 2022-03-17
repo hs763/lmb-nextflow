@@ -15,6 +15,7 @@
 
 import os
 import glob
+import pandas as pd
 
 VERSION = "0.0.1_dev"
 
@@ -82,54 +83,70 @@ def main():
 
 
     # Import genomes to download list (csv file)
+    genomes_to_download_listfile = 'genomes_to_download.csv'
+    genomes_to_download_list = pd.read_csv(genomes_to_download_listfile)
+   # print(genomes_to_download_list)
+
+
 
     print("Writing genome files to " + genome_ref_outdir)
     #make_non_existant_dir(output_directory)
 
-    species = 'saccharomyces_cerevisiae'
-    assembly = 'R64-1-1'
-    release = 105
-    release = str(release)
-    database_source = 'Ensembl'
 
-    print('Genome: ' + species + ' ' + assembly + ' (' + release + ')')
-    release_outsubdir = '/'.join([genome_ref_outdir, database_source, species, assembly, 'Release_' + release])
+        
+    for index, row in genomes_to_download_list.iterrows():
 
-    # Download FASTA
-    data_outsubdir = release_outsubdir + '/FASTA/'
+        species = row['species']
+        assembly = row['assembly']
+        release = row['release']
+        release = str(release)
+        database = row['database']
+        #species = 'saccharomyces_cerevisiae'
+        #assembly = 'R64-1-1'
+        #release = 105
+        #release = str(release)
+        #database_source = 'Ensembl'
 
-    if not os.path.exists(data_outsubdir):
-        os.makedirs(data_outsubdir)
-        os.chdir(data_outsubdir)
-        download_ensembl_fasta(species, assembly, release)
-        os.system('gunzip *.fa.gz')
-    else:
-        print('Skipping - FASTQ folder already exists: ' + data_outsubdir)
+        print('Genome: ' + species + ' ' + assembly + ' (' + release + ')')
+        release_outsubdir = '/'.join([genome_ref_outdir, database, species, assembly, 'Release_' + release])
 
+        # Download FASTA
+        data_outsubdir = release_outsubdir + '/FASTA/'
 
-    # Download GTF
-    data_outsubdir = release_outsubdir + '/GTF/'
-
-    if not os.path.exists(data_outsubdir):
-        os.makedirs(data_outsubdir)
-        os.chdir(data_outsubdir)
-        download_ensembl_gtf(species, assembly, release)
-        os.system('gunzip *.gz')
-
-        #Extract splice sites and exons - create subroutine - HISAT2
-        #gtf_file = glob.glob('*.gtf')[0]
-        #splice_site_file = gtf_file[:-3] + 'ss'
-        #exon_file = gtf_file[:-3] + 'exon'
-
-        #command = f'extract_splice_sites.py {gtf_file} > {splice_site_file}'
-        #os.system(command)
-
-        #command = f'extract_exons.py {gtf_file} > {exon_file}'
-        #os.system(command)
+        if not os.path.exists(data_outsubdir):
+            os.makedirs(data_outsubdir)
+            os.chdir(data_outsubdir)
+            download_ensembl_fasta(species, assembly, release)
+            os.system('gunzip *.fa.gz')
+        else:
+            print('Skipping - FASTQ folder already exists: ' + data_outsubdir)
 
 
-    else:
-        print('Skipping - FASTQ folder already exists: ' + data_outsubdir)
+        # Download GTF
+        data_outsubdir = release_outsubdir + '/GTF/'
+
+        if not os.path.exists(data_outsubdir):
+            os.makedirs(data_outsubdir)
+            os.chdir(data_outsubdir)
+            download_ensembl_gtf(species, assembly, release)
+            os.system('gunzip *.gz')
+
+            #Extract splice sites and exons - create subroutine - HISAT2
+            #gtf_file = glob.glob('*.gtf')[0]
+            #splice_site_file = gtf_file[:-3] + 'ss'
+            #exon_file = gtf_file[:-3] + 'exon'
+
+            #command = f'extract_splice_sites.py {gtf_file} > {splice_site_file}'
+            #os.system(command)
+
+            #command = f'extract_exons.py {gtf_file} > {exon_file}'
+            #os.system(command)
+
+            # Build Bowtie 2 index files
+            
+
+        else:
+            print('Skipping - FASTQ folder already exists: ' + data_outsubdir)
 
 
 
