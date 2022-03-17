@@ -16,6 +16,7 @@
 # extract_exons.py
 # bowtie2-build
 # hisat2-build
+# STAR
 
 import os
 import glob
@@ -131,13 +132,34 @@ def make_hisat2_index(hisat2_folder, fasta_folder, gtf_folder, species, assembly
 
 
 
+####################################
+# make_star_index
+####################################
+def make_star_index(star_folder, fasta_folder, gtf_folder, species, assembly, release):
 
-####################################
-# make_non_existant_dir
-####################################
-def make_non_existant_dir(dir_path):
-    if not os.path.exists(dir_path):
-        os.makedirs(dir_path)
+    if not os.path.exists(star_folder):
+
+        os.makedirs(star_folder)
+        os.chdir(star_folder)
+
+        fasta_files = glob.glob(f'{fasta_folder}/*.fa')
+        fasta_files = ' '.join(fasta_files)
+        gtf_file = glob.glob(f'{gtf_folder}/*.gtf')
+        gtf_file = gtf_file[0]
+
+        #Build index
+        genome_index_basename = '.'.join([species, assembly, 'dna', release, 'STAR_index'])
+        os.makedirs(genome_index_basename)
+
+        command = f'STAR --runThreadN 8 --runMode genomeGenerate --genomeDir {genome_index_basename} --genomeFastaFiles {fasta_files} --sjdbGTFfile {gtf_file}'
+        os.system(command)
+
+    else:
+        print('Skipping - STAR folder already exists: ' + star_folder)
+
+
+
+
 
 
 #########################################
@@ -148,17 +170,13 @@ def make_non_existant_dir(dir_path):
 
 def main():
 
-
     # Import genomes to download list (csv file)
     genomes_to_download_listfile = 'genomes_to_download.csv'
     genomes_to_download_list = pd.read_csv(genomes_to_download_listfile)
    # print(genomes_to_download_list)
 
-
-
     print("Writing genome files to " + genome_ref_outdir)
     #make_non_existant_dir(output_directory)
-
 
         
     for index, genomes_to_download_metadata in genomes_to_download_list.iterrows():
@@ -213,7 +231,11 @@ def main():
             make_hisat2_index(hisat2_folder, fasta_folder, gtf_folder, species, assembly, release)
 
 
-
+        # Build STAR index files
+        if(genomes_to_download_metadata['star']):
+            star_folder = release_outsubdir + '/STAR/'
+            make_star_index(star_folder, fasta_folder, gtf_folder, species, assembly, release)
+         
 
     print('Done')
 
