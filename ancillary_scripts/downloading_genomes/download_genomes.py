@@ -23,8 +23,9 @@
 
 # To do
 # test overview file
-# create dictionary for foldnames to standardise
+# Download primary assembly and if not available then toplevel
 # write help text
+# What happens if Ensembl not specified as database?
 
 
 from operator import ge
@@ -38,6 +39,18 @@ VERSION = "0.0.1_dev"
 current_working_directory = os.getcwd()
 genome_ref_outdir = current_working_directory
 genome_ref_outdir = genome_ref_outdir + '/Genome_References/'
+
+folder_names = {        #To standardise folder names throughout code
+                'fasta' : 'FASTA',
+                'gtf' : 'GTF',
+                'bowtie2' : 'Bowtie2_index',
+                'hisat2' : 'HISAT2_index',
+                'star' : 'STAR_index',
+                'hicup' : 'HiCUP_digest'
+                }
+
+
+
 
 
 ####################################
@@ -220,32 +233,32 @@ def make_overview_file(genomes_to_download_list):
         genome_overview_text = 'Genome_Name: ' + genome_name + '\n'
 
         # FASTA file(s)
-        fasta_folder = release_outsubdir + '/FASTA/'  
+        fasta_folder = release_outsubdir + f"/{folder_names['fasta']}/"  
         if os.path.exists(fasta_folder):
             genome_overview_text = genome_overview_text + f"\tfasta = '{fasta_folder}'\n"
 
         # GTF file
-        gtf_folder = release_outsubdir + '/GTF/' 
+        gtf_folder = release_outsubdir + f"/{folder_names['gtf']}/" 
         if os.path.exists(gtf_folder):
             genome_overview_text = genome_overview_text + f"\tgtf = '{gtf_folder}'\n"
 
         # Bowtie2 Index
-        bowtie2_folder = release_outsubdir + '/Bowtie2/'
+        bowtie2_folder = release_outsubdir + f"/{folder_names['bowtie2']}/"
         if os.path.exists(bowtie2_folder):
             genome_overview_text = genome_overview_text + f"\tbowtie2 = '{bowtie2_folder}'\n"
 
         # HISAT2 Index
-        hisat2_folder = release_outsubdir + '/HISAT2/'
+        hisat2_folder = release_outsubdir + f"/{folder_names['hisat2']}/"
         if os.path.exists(hisat2_folder):
             genome_overview_text = genome_overview_text + f"\thisat2 = '{hisat2_folder}'\n"
 
         # STAR Index
-        star_folder = release_outsubdir + '/STAR/'
+        star_folder = release_outsubdir + f"/{folder_names['star']}/"
         if os.path.exists(star_folder):
             genome_overview_text = genome_overview_text + f"\tstar = '{star_folder}'\n"
 
         # HiCUP Digest
-        hicup_folder = release_outsubdir + '/HiCUP_digest/'
+        hicup_folder = release_outsubdir + f"/{folder_names['hicup']}/"
         if os.path.exists(hicup_folder):
             genome_overview_text = genome_overview_text + f"\thicup_digest = '{hicup_folder}'\n"
 
@@ -284,7 +297,7 @@ def main():
         release_outsubdir = genome_ref_outdir + '/'.join([database, species, assembly, 'Release_' + release])
 
         # Download FASTA
-        fasta_folder = release_outsubdir + '/FASTA/'
+        fasta_folder = release_outsubdir + f"/{folder_names['fasta']}/"
 
         if not os.path.exists(fasta_folder):
             os.makedirs(fasta_folder)
@@ -296,7 +309,7 @@ def main():
 
 
         # Download GTF
-        gtf_folder = release_outsubdir + '/GTF/'
+        gtf_folder = release_outsubdir + f"/{folder_names['gtf']}/"
 
         if not os.path.exists(gtf_folder):
             os.makedirs(gtf_folder)
@@ -309,25 +322,25 @@ def main():
 
         # Build Bowtie2 index files
         if(genomes_to_download_metadata['bowtie2']):
-            bowtie2_folder = release_outsubdir + '/Bowtie2/'
+            bowtie2_folder = release_outsubdir + f"/{folder_names['bowtie2']}/"
             make_bowtie2_index(bowtie2_folder, fasta_folder, species, assembly, release)
 
 
         # Build HISAT2 index files
         if(genomes_to_download_metadata['hisat2']):
-            hisat2_folder = release_outsubdir + '/HISAT2/'
+            hisat2_folder = release_outsubdir + f"/{folder_names['hisat2']}/"
             make_hisat2_index(hisat2_folder, fasta_folder, gtf_folder, species, assembly, release)
 
 
         # Build STAR index files
         if(genomes_to_download_metadata['star']):
-            star_folder = release_outsubdir + '/STAR/'
+            star_folder = release_outsubdir + f"/{folder_names['star']}/"
             make_star_index(star_folder, fasta_folder, gtf_folder, species, assembly, release)
 
         
         # Create HiCUP digest files
         if(genomes_to_download_metadata['hicup']):
-            hicup_folder = release_outsubdir + '/HiCUP_digest/'
+            hicup_folder = release_outsubdir + f"/{folder_names['hicup']}/"
             make_hicup_digest_files(hicup_folder, fasta_folder, species, assembly, release)
 
         
