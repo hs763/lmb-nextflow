@@ -20,6 +20,14 @@
 # hicup_digester
 # gzip
 
+
+# To do
+# test overview file
+# create dictionary for foldnames to standardise
+# write help text
+
+
+from operator import ge
 import os
 import glob
 import re
@@ -193,30 +201,74 @@ def make_hicup_digest_files(hicup_folder, fasta_folder, species, assembly, relea
 
 
 
-#########################################
-#########################################
-# MAIN
-#########################################
-#########################################
+####################################
+# make_overview_file
+####################################
+def make_overview_file(genomes_to_download_list):
 
-def main():
-
-    # Import genomes to download list (csv file)
-    genomes_to_download_listfile = 'genomes_to_download.csv'
-    genomes_to_download_list = pd.read_csv(genomes_to_download_listfile)
-   # print(genomes_to_download_list)
-
-    print("Writing genome files to " + genome_ref_outdir)
-    #make_non_existant_dir(output_directory)
-
-        
     for index, genomes_to_download_metadata in genomes_to_download_list.iterrows():
-
         species = genomes_to_download_metadata['species']
         assembly = genomes_to_download_metadata['assembly']
         release = genomes_to_download_metadata['release']
         release = str(release)
         database = genomes_to_download_metadata['database']
+
+        release_outsubdir = genome_ref_outdir + '/'.join([database, species, assembly, 'Release_' + release])
+
+        #Genome Name
+        genome_name = species + '.' + assembly + '.release_' + release
+        genome_overview_text = 'Genome_Name: ' + genome_name + '\n'
+
+        # FASTA file(s)
+        fasta_folder = release_outsubdir + '/FASTA/'  
+        if os.path.exists(fasta_folder):
+            genome_overview_text = genome_overview_text + f"\tfasta = '{fasta_folder}'\n"
+
+        # GTF file
+        gtf_folder = release_outsubdir + '/GTF/' 
+        if os.path.exists(gtf_folder):
+            genome_overview_text = genome_overview_text + f"\tgtf = '{gtf_folder}'\n"
+
+        # HISAT2 Index
+        hisat2_folder = release_outsubdir + '/HISAT2/'
+        if os.path.exists(hisat2_folder):
+            genome_overview_text = genome_overview_text + f"\thisat2 = '{hisat2_folder}'\n"
+
+        # STAR Index
+        star_folder = release_outsubdir + '/STAR/'
+        if os.path.exists(star_folder):
+            genome_overview_text = genome_overview_text + f"\tstar = '{star_folder}'\n"
+
+        # HiCUP Digest
+        hicup_folder = release_outsubdir + '/HiCUP_digest/'
+        if os.path.exists(hicup_folder):
+            genome_overview_text = genome_overview_text + f"\thicup_digest = '{hicup_folder}'\n"
+
+        return(genome_overview_text)
+
+
+
+
+#########################################
+#########################################
+# MAIN
+#########################################
+#########################################
+def main():
+
+    # Import genomes to download list (csv file)
+    genomes_to_download_listfile = 'genomes_to_download.csv'
+    genomes_to_download_list = pd.read_csv(genomes_to_download_listfile)
+    print("Writing genome files to " + genome_ref_outdir)
+
+    for index, genomes_to_download_metadata in genomes_to_download_list.iterrows():
+        species = genomes_to_download_metadata['species']
+        assembly = genomes_to_download_metadata['assembly']
+        release = genomes_to_download_metadata['release']
+        release = str(release)
+        database = genomes_to_download_metadata['database']
+        
+        #Useful for testing:
         #species = 'saccharomyces_cerevisiae'
         #assembly = 'R64-1-1'
         #release = 105
@@ -273,12 +325,15 @@ def main():
             hicup_folder = release_outsubdir + '/HiCUP_digest/'
             make_hicup_digest_files(hicup_folder, fasta_folder, species, assembly, release)
 
-         
+        
+        # Make overview file to be used in the config file
+        genome_overview_text = make_overview_file(genomes_to_download_list)
+        genome_overview_file = genome_ref_outdir + '/genome_overview.txt'
+        with open(genome_overview_file, 'w') as f_out:
+            f_out.write(genome_overview_text)
+        f_out.close()    
 
     print('Done')
 
-
-
 if __name__ == "__main__":
     main()
-
