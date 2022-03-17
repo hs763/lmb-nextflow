@@ -17,6 +17,8 @@
 # bowtie2-build
 # hisat2-build
 # STAR
+# hicup_digester
+# gzip
 
 import os
 import glob
@@ -28,7 +30,6 @@ VERSION = "0.0.1_dev"
 current_working_directory = os.getcwd()
 genome_ref_outdir = current_working_directory
 genome_ref_outdir = genome_ref_outdir + '/Genome_References/'
-
 
 
 ####################################
@@ -158,7 +159,37 @@ def make_star_index(star_folder, fasta_folder, gtf_folder, species, assembly, re
         print('Skipping - STAR folder already exists: ' + star_folder)
 
 
+####################################
+# make_hicup_digest_files
+####################################
+def make_hicup_digest_files(hicup_folder, fasta_folder, species, assembly, release):
 
+    if not os.path.exists(hicup_folder):
+        restriction_enzymes = {
+            'DpnII' : '^GATC',
+            'MboI' : '^GATC',
+            'EcoRI': 'G^AATTC',
+            'BglII' : 'A^GATCT',
+            'NcoI' : 'C^CATGG'
+        }
+
+        os.chdir(fasta_folder)
+        release = 'release_' + release  
+        genome_index_basename = '_'.join([species, assembly, 'dna', release])
+        genome_index_basename = re.sub(r'\W+', '_', genome_index_basename)   #Remove non-word characters
+        
+        #Perform digest(s)
+        for enzyme, seq in restriction_enzymes.items():
+            command = f'hicup_digester --re1 {seq},{enzyme} --genome {genome_index_basename} --zip *.fa'
+            os.system(command)
+
+        #Move Digest files to new folder
+        os.makedirs(hicup_folder)
+        command = f'mv Digest*.txt.gz {hicup_folder}'
+        os.system(command)
+
+    else:
+        print('Skipping - HiCUP digest folder already exists: ' + hicup_folder)
 
 
 
@@ -235,6 +266,13 @@ def main():
         if(genomes_to_download_metadata['star']):
             star_folder = release_outsubdir + '/STAR/'
             make_star_index(star_folder, fasta_folder, gtf_folder, species, assembly, release)
+
+        
+        # Create HiCUP digest files
+        if(genomes_to_download_metadata['hicup']):
+            hicup_folder = release_outsubdir + '/HiCUP_digest/'
+            make_hicup_digest_files(hicup_folder, fasta_folder, species, assembly, release)
+
          
 
     print('Done')
