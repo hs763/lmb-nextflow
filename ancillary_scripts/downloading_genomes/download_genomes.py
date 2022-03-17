@@ -229,6 +229,11 @@ def make_overview_file(genomes_to_download_list):
         if os.path.exists(gtf_folder):
             genome_overview_text = genome_overview_text + f"\tgtf = '{gtf_folder}'\n"
 
+        # Bowtie2 Index
+        bowtie2_folder = release_outsubdir + '/Bowtie2/'
+        if os.path.exists(bowtie2_folder):
+            genome_overview_text = genome_overview_text + f"\tbowtie2 = '{bowtie2_folder}'\n"
+
         # HISAT2 Index
         hisat2_folder = release_outsubdir + '/HISAT2/'
         if os.path.exists(hisat2_folder):
