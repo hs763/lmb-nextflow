@@ -12,9 +12,13 @@
 
 # Need in path:
 # extract_splice_sites.py
+#
+#
+# bowtie2-build
 
 import os
 import glob
+import re
 import pandas as pd
 
 VERSION = "0.0.1_dev"
@@ -64,6 +68,35 @@ def download_ensembl_gtf(species, assembly, release):
 
 
 ####################################
+# make_bowtie2_index
+####################################
+def make_bowtie2_index(bowtie2_folder, fasta_folder, species, assembly, release):
+
+
+    if not os.path.exists(bowtie2_folder):
+        os.chdir(fasta_folder)
+        fasta_files = glob.glob('*.fa')
+        fasta_files = ','.join(fasta_files)
+
+        #Build index
+        genome_index_basename = '.'.join([species, assembly, 'dna', release])
+        command = f'bowtie2-build {fasta_files} {genome_index_basename} > bowtie2-build.out'
+        os.system(command)
+
+        #Move index files to new folder
+        os.makedirs(bowtie2_folder)
+        command = f'mv *.bt2 {bowtie2_folder}'
+        os.system(command)
+        command = f'mv bowtie2-build.out {bowtie2_folder}'
+        os.system(command)
+    else:
+        print('Skipping - Bowtie2 folder already exists: ' + bowtie2_folder)
+
+
+
+
+
+####################################
 # make_non_existant_dir
 ####################################
 def make_non_existant_dir(dir_path):
@@ -94,13 +127,13 @@ def main():
 
 
         
-    for index, row in genomes_to_download_list.iterrows():
+    for index, genomes_to_download_metadata in genomes_to_download_list.iterrows():
 
-        species = row['species']
-        assembly = row['assembly']
-        release = row['release']
+        species = genomes_to_download_metadata['species']
+        assembly = genomes_to_download_metadata['assembly']
+        release = genomes_to_download_metadata['release']
         release = str(release)
-        database = row['database']
+        database = genomes_to_download_metadata['database']
         #species = 'saccharomyces_cerevisiae'
         #assembly = 'R64-1-1'
         #release = 105
@@ -108,26 +141,26 @@ def main():
         #database_source = 'Ensembl'
 
         print('Genome: ' + species + ' ' + assembly + ' (' + release + ')')
-        release_outsubdir = '/'.join([genome_ref_outdir, database, species, assembly, 'Release_' + release])
+        release_outsubdir = genome_ref_outdir + '/'.join([database, species, assembly, 'Release_' + release])
 
         # Download FASTA
-        data_outsubdir = release_outsubdir + '/FASTA/'
+        fasta_folder = release_outsubdir + '/FASTA/'
 
-        if not os.path.exists(data_outsubdir):
-            os.makedirs(data_outsubdir)
-            os.chdir(data_outsubdir)
+        if not os.path.exists(fasta_folder):
+            os.makedirs(fasta_folder)
+            os.chdir(fasta_folder)
             download_ensembl_fasta(species, assembly, release)
             os.system('gunzip *.fa.gz')
         else:
-            print('Skipping - FASTQ folder already exists: ' + data_outsubdir)
+            print('Skipping - FASTQ folder already exists: ' + fasta_folder)
 
 
         # Download GTF
-        data_outsubdir = release_outsubdir + '/GTF/'
+        gtf_folder = release_outsubdir + '/GTF/'
 
-        if not os.path.exists(data_outsubdir):
-            os.makedirs(data_outsubdir)
-            os.chdir(data_outsubdir)
+        if not os.path.exists(gtf_folder):
+            os.makedirs(gtf_folder)
+            os.chdir(gtf_folder)
             download_ensembl_gtf(species, assembly, release)
             os.system('gunzip *.gz')
 
@@ -141,12 +174,15 @@ def main():
 
             #command = f'extract_exons.py {gtf_file} > {exon_file}'
             #os.system(command)
-
-            # Build Bowtie 2 index files
-            
-
         else:
-            print('Skipping - FASTQ folder already exists: ' + data_outsubdir)
+            print('Skipping - GTF folder already exists: ' + gtf_folder)
+
+        # Build Bowtie 2 index files
+        if(genomes_to_download_metadata['bowtie2']):
+            bowtie2_folder = release_outsubdir + '/Bowtie2/'
+            make_bowtie2_index(bowtie2_folder, fasta_folder, species, assembly, release)
+
+
 
 
 
