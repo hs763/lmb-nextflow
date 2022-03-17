@@ -11,10 +11,11 @@
 # Processing columns (1 or 0)
 
 # Need in path:
+# lftp
 # extract_splice_sites.py
-#
-#
+# extract_exons.py
 # bowtie2-build
+# hisat2-build
 
 import os
 import glob
@@ -26,7 +27,6 @@ VERSION = "0.0.1_dev"
 current_working_directory = os.getcwd()
 genome_ref_outdir = current_working_directory
 genome_ref_outdir = genome_ref_outdir + '/Genome_References/'
-
 
 
 
@@ -71,8 +71,7 @@ def download_ensembl_gtf(species, assembly, release):
 # make_bowtie2_index
 ####################################
 def make_bowtie2_index(bowtie2_folder, fasta_folder, species, assembly, release):
-
-
+    
     if not os.path.exists(bowtie2_folder):
         os.chdir(fasta_folder)
         fasta_files = glob.glob('*.fa')
@@ -94,6 +93,43 @@ def make_bowtie2_index(bowtie2_folder, fasta_folder, species, assembly, release)
 
 
 
+####################################
+# make_hisat2_index
+####################################
+def make_hisat2_index(hisat2_folder, fasta_folder, gtf_folder, species, assembly, release):
+    
+    if not os.path.exists(hisat2_folder):
+
+        #Make splice sites and exons file
+        os.chdir(gtf_folder)
+        gtf_file = glob.glob('*.gtf')[0]
+        splice_site_file = gtf_file[:-3] + 'ss'
+        exon_file = gtf_file[:-3] + 'exon'
+
+        command = f'extract_splice_sites.py {gtf_file} > {splice_site_file}'
+        os.system(command)     
+        command = f'extract_exons.py {gtf_file} > {exon_file}'
+        os.system(command)
+
+        # Make HISAT2 index
+        os.chdir(fasta_folder)
+        fasta_files = glob.glob('*.fa')
+        fasta_files = ','.join(fasta_files)
+        genome_index_basename = '.'.join([species, assembly, 'dna', release])
+        command = f'hisat2-build {fasta_files} {genome_index_basename} > hisat2-build.out'
+        os.system(command)
+
+        #Move index files to new folder
+        os.makedirs(hisat2_folder)
+        command = f'mv *.ht2 {hisat2_folder}'
+        os.system(command)
+        command = f'mv hisat2-build.out {hisat2_folder}'
+        os.system(command)
+
+    else:
+        print('Skipping - HISAT2 folder already exists: ' + hisat2_folder)
+
+
 
 
 ####################################
@@ -102,8 +138,6 @@ def make_bowtie2_index(bowtie2_folder, fasta_folder, species, assembly, release)
 def make_non_existant_dir(dir_path):
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
-
-
 
 
 #########################################
@@ -164,24 +198,19 @@ def main():
             download_ensembl_gtf(species, assembly, release)
             os.system('gunzip *.gz')
 
-            #Extract splice sites and exons - create subroutine - HISAT2
-            #gtf_file = glob.glob('*.gtf')[0]
-            #splice_site_file = gtf_file[:-3] + 'ss'
-            #exon_file = gtf_file[:-3] + 'exon'
-
-            #command = f'extract_splice_sites.py {gtf_file} > {splice_site_file}'
-            #os.system(command)
-
-            #command = f'extract_exons.py {gtf_file} > {exon_file}'
-            #os.system(command)
         else:
             print('Skipping - GTF folder already exists: ' + gtf_folder)
 
-        # Build Bowtie 2 index files
+        # Build Bowtie2 index files
         if(genomes_to_download_metadata['bowtie2']):
             bowtie2_folder = release_outsubdir + '/Bowtie2/'
             make_bowtie2_index(bowtie2_folder, fasta_folder, species, assembly, release)
 
+
+        # Build HISAT2 index files
+        if(genomes_to_download_metadata['hisat2']):
+            hisat2_folder = release_outsubdir + '/HISAT2/'
+            make_hisat2_index(hisat2_folder, fasta_folder, gtf_folder, species, assembly, release)
 
 
 
