@@ -1,0 +1,2 @@
+species,assembly,release,database,genome_link,gtf_link,bowtie2,hisat2,star,hicup
+saccharomyces_cerevisiae,R64-1-1,105,Ensembl,,,1,1,1,1
