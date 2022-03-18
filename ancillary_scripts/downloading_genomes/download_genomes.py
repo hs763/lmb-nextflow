@@ -62,16 +62,20 @@ def download_ensembl_fasta(species, assembly, release):
     ensembl_base = 'http://ftp.ensembl.org/pub/release-'
     download_folder = ensembl_base + release + '/fasta/' + species + '/dna/'
 
-    print("Downloading chromosomal sequences")
-    command = 'lftp -e "mget *.dna.chromosome.*fa.gz; bye" '
+    print("Downloading primary assembly sequences")
+    command = 'lftp -e "mget *.dna.primary_assembly.fa.gz ; bye" '
     command = command + download_folder
     os.system(command)
 
-    print("Downloading nonchromosomal sequences")
-    command = 'lftp -e "mget *.dna.nonchromosomal.*fa.gz; bye" '
-    command = command + download_folder
-    os.system(command)
-
+    # Did primary assmebly download, if not download toplevel.
+    primary_assembly_lookup = download_folder + 'mget *.dna.primary_assembly.fa.gz'
+    
+    if not (os.path.exists(primary_assembly_lookup)):
+        print('Primary assembly not found, downloading toplevel file')
+        print('(When there is no primary assembly file, the toplevel file does not include haplotype sequences)')
+        command = 'lftp -e "mget *.dna.toplevel.fa.gz  ; bye" '
+        command = command + download_folder
+        os.system(command)
 
 
 ####################################
@@ -263,6 +267,8 @@ def make_overview_file(genomes_to_download_list):
             genome_overview_text = genome_overview_text + f"\thicup_digest = '{hicup_folder}'\n"
 
         return(genome_overview_text)
+
+
 
 
 
