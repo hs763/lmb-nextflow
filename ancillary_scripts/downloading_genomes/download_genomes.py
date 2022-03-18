@@ -1,39 +1,49 @@
 # Python3 script to download genomes
 
-#It assumes ENSEMBL download unless specified elsewhere
-# Input variable:
-# Species
-# Assembly name
-# Release
-# Database name (typically ENSEMBL)
-# Genome Link (if not ENSEMBL)
-# GTF link (if not ENSEMBL)
-# Processing columns (1 or 0)
-
-# Need in path:
-# lftp
-# extract_splice_sites.py
-# extract_exons.py
-# bowtie2-build
-# hisat2-build
-# STAR
-# hicup_digester
-# gzip
-
-
-# To do
-# test overview file
-# write help text
-# What happens if Ensembl not specified as database?
-
-
 from operator import ge
 import os
 import glob
 import re
+import argparse
 import pandas as pd
 
-VERSION = "0.0.1_dev"
+parser = argparse.ArgumentParser(description='''
+Python3 script to download genomes
+
+It assumes downloading from Ensembl, unless specified
+elsewhere. 
+
+Takes as input 'samplesheet.csv', which 
+needs to be in the current working directory. It 
+reads this file to determine what to download and 
+what other operations to perform (e.g. build new 
+Bowtie2 index files).  The values 0/1 set this for each 
+download in samplesheet.csv. 
+
+Currently functionality 
+is only supported for Ensembl downloads. (TODO: maybe 
+add NCBI downloads as a separate function?; add links 
+to FASTA files and GTF files for other genome data 
+repositories).
+ 
+The following are / maybe needed in path for this script to run:
+           lftp,
+           extract_splice_sites.py,
+           extract_exons.py,
+           bowtie2-build,
+           hisat2-build,
+           STAR,
+           hicup_digester,
+           gzip
+''')
+
+parser.add_argument("--hsp", action='store_true',
+                    help="only process genes specified by --gene_symbol AND meet FDR requirements")
+
+
+args = parser.parse_known_args()    #Use parse_known_arg to differentiate between arguments pre-specified and those that are not
+options = args[0]   # Get the 2 arrays of known/unknown arguments from the tuple
+
 
 current_working_directory = os.getcwd()
 genome_ref_outdir = current_working_directory
@@ -47,7 +57,6 @@ folder_names = {        #To standardise folder names throughout code
                 'star' : 'STAR_index',
                 'hicup' : 'HiCUP_digest'
                 }
-
 
 
 
