@@ -23,7 +23,6 @@
 
 # To do
 # test overview file
-# Download primary assembly and if not available then toplevel
 # write help text
 # What happens if Ensembl not specified as database?
 
@@ -52,7 +51,6 @@ folder_names = {        #To standardise folder names throughout code
 
 
 
-
 ####################################
 # download_ensembl_fasta
 ####################################
@@ -67,7 +65,7 @@ def download_ensembl_fasta(species, assembly, release):
     command = command + download_folder
     os.system(command)
 
-    # Did primary assmebly download, if not download toplevel.
+    # Did primary assmebly download, if not download toplevel
     primary_assembly_lookup = download_folder + 'mget *.dna.primary_assembly.fa.gz'
     
     if not (os.path.exists(primary_assembly_lookup)):
@@ -239,12 +237,18 @@ def make_overview_file(genomes_to_download_list):
         # FASTA file(s)
         fasta_folder = release_outsubdir + f"/{folder_names['fasta']}/"  
         if os.path.exists(fasta_folder):
-            genome_overview_text = genome_overview_text + f"\tfasta = '{fasta_folder}'\n"
+            fasta_file = glob.glob(f'{fasta_folder}/*.fa')
+            if(len(fasta_file)):    # Anything found?
+                fasta_file = fasta_file[0]
+                genome_overview_text = genome_overview_text + f"\tfasta = '{fasta_file}'\n"
 
         # GTF file
         gtf_folder = release_outsubdir + f"/{folder_names['gtf']}/" 
         if os.path.exists(gtf_folder):
-            genome_overview_text = genome_overview_text + f"\tgtf = '{gtf_folder}'\n"
+            gtf_file = glob.glob(f'{gtf_folder}/*.gtf')
+            if(len(gtf_file)):    # Anything found?
+                gtf_file = gtf_file[0]
+                genome_overview_text = genome_overview_text + f"\tgtf = '{gtf_file}'\n"
 
         # Bowtie2 Index
         bowtie2_folder = release_outsubdir + f"/{folder_names['bowtie2']}/"
