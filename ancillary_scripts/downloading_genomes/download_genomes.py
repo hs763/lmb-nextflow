@@ -69,14 +69,15 @@ def download_ensembl_fasta(species, assembly, release):
     download_folder = ensembl_base + release + '/fasta/' + species + '/dna/'
 
     print("Downloading primary assembly sequences")
-    command = 'lftp -e "mget *.dna.primary_assembly.fa.gz ; bye" '
+    command = 'lftp -e "mget *.dna.primary_assembly.* ; bye" '
     command = command + download_folder
     os.system(command)
 
-    # Did primary assmebly download, if not download toplevel
-    primary_assembly_lookup = download_folder + 'mget *.dna.primary_assembly.fa.gz'
+    # Did primary assembly download, if not download toplevel
+    primary_assembly_lookup = os.getcwd() + '/*.dna.primary_assembly.*'
+    fasta_files_downloaded = glob.glob(primary_assembly_lookup)
     
-    if not (os.path.exists(primary_assembly_lookup)):
+    if(len(fasta_files_downloaded) == 0):
         print('Primary assembly not found, downloading toplevel file')
         print('(When there is no primary assembly file, the toplevel file does not include haplotype sequences)')
         command = 'lftp -e "mget *.dna.toplevel.fa.gz  ; bye" '
