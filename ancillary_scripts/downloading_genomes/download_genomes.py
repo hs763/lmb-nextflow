@@ -8,7 +8,7 @@ import argparse
 import pandas as pd
 
 parser = argparse.ArgumentParser(description='''
-Python3 script to download genomes
+Python3 script to download genomes.
 
 It assumes downloading from Ensembl, unless specified
 elsewhere. 
@@ -37,8 +37,8 @@ The following are / maybe needed in path for this script to run:
            gzip
 ''')
 
-parser.add_argument("--hsp", action='store_true',
-                    help="only process genes specified by --gene_symbol AND meet FDR requirements")
+parser.add_argument("--genome_list", action='store', type=str,
+                    help="CSV file listing genomes to download [default=genomes_to_download.csv]", default='genomes_to_download.csv')
 
 
 args = parser.parse_known_args()    #Use parse_known_arg to differentiate between arguments pre-specified and those that are not
@@ -57,7 +57,6 @@ folder_names = {        #To standardise folder names throughout code
                 'star' : 'STAR_index',
                 'hicup' : 'HiCUP_digest'
                 }
-
 
 
 ####################################
@@ -284,8 +283,6 @@ def make_overview_file(genomes_to_download_list):
 
 
 
-
-
 #########################################
 #########################################
 # MAIN
@@ -294,8 +291,7 @@ def make_overview_file(genomes_to_download_list):
 def main():
 
     # Import genomes to download list (csv file)
-    genomes_to_download_listfile = 'genomes_to_download.csv'
-    genomes_to_download_list = pd.read_csv(genomes_to_download_listfile)
+    genomes_to_download_list = pd.read_csv(options.genome_list)
     print("Writing genome files to " + genome_ref_outdir)
 
     for index, genomes_to_download_metadata in genomes_to_download_list.iterrows():
