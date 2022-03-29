@@ -230,6 +230,8 @@ def make_hicup_digest_files(hicup_folder, fasta_folder, species, assembly, relea
 ####################################
 def make_overview_file(genomes_to_download_list):
 
+    genome_overview_text = ''
+
     for index, genomes_to_download_metadata in genomes_to_download_list.iterrows():
         species = genomes_to_download_metadata['species']
         assembly = genomes_to_download_metadata['assembly']
@@ -241,7 +243,7 @@ def make_overview_file(genomes_to_download_list):
 
         #Genome Name
         genome_name = species + '.' + assembly + '.release_' + release
-        genome_overview_text = 'Genome_Name: ' + genome_name + '\n'
+        genome_overview_text = genome_overview_text + 'Genome_Name: ' + genome_name + '\n'
 
         # FASTA file(s)
         fasta_folder = release_outsubdir + f"/{folder_names['fasta']}/"  
@@ -279,7 +281,7 @@ def make_overview_file(genomes_to_download_list):
         if os.path.exists(hicup_folder):
             genome_overview_text = genome_overview_text + f"\thicup_digest = '{hicup_folder}'\n"
 
-        return(genome_overview_text)
+    return(genome_overview_text)
 
 
 
@@ -360,12 +362,13 @@ def main():
             make_hicup_digest_files(hicup_folder, fasta_folder, species, assembly, release)
 
         
-        # Make overview file to be used in the config file
-        genome_overview_text = make_overview_file(genomes_to_download_list)
-        genome_overview_file = genome_ref_outdir + '/genome_overview.txt'
-        with open(genome_overview_file, 'w') as f_out:
-            f_out.write(genome_overview_text)
-        f_out.close()    
+    # Make overview file to be used in the config file
+    genome_overview_text = make_overview_file(genomes_to_download_list)
+    genome_overview_file = genome_ref_outdir + 'genome_overview.txt'
+
+    with open(genome_overview_file, 'w') as f_out:
+        f_out.write(genome_overview_text)
+    f_out.close()    
 
     print('Done')
 
