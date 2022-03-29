@@ -2,6 +2,7 @@
 
 from operator import ge
 import os
+#import os.path
 import glob
 import re
 import argparse
@@ -38,7 +39,8 @@ The following are / maybe needed in path for this script to run:
 ''')
 
 parser.add_argument("--genome_list", action='store', type=str,
-                    help="CSV file listing genomes to download [default=genomes_to_download.csv]", default='genomes_to_download.csv')
+                    help="CSV file listing genomes to download [default=genomes_to_download.csv]", 
+                    default='genomes_to_download.csv')
 
 
 args = parser.parse_known_args()    #Use parse_known_arg to differentiate between arguments pre-specified and those that are not
@@ -48,6 +50,7 @@ options = args[0]   # Get the 2 arrays of known/unknown arguments from the tuple
 current_working_directory = os.getcwd()
 genome_ref_outdir = current_working_directory
 genome_ref_outdir = genome_ref_outdir + '/Genome_References/'
+temporary_fasta_folder = genome_ref_outdir + '/_tmp_original_fasta_files_to_delete'
 
 folder_names = {        #To standardise folder names throughout code
                 'fasta' : 'FASTA',
@@ -74,15 +77,44 @@ def download_ensembl_fasta(species, assembly, release):
     os.system(command)
 
     # Did primary assembly download, if not download toplevel
-    primary_assembly_lookup = os.getcwd() + '/*.dna.primary_assembly.*'
-    fasta_files_downloaded = glob.glob(primary_assembly_lookup)
+    file_lookup = os.getcwd() + '/*.dna.primary_assembly.*'
+    fasta_files_downloaded = glob.glob(file_lookup)
     
     if(len(fasta_files_downloaded) == 0):
         print('Primary assembly not found, downloading toplevel file')
         print('(When there is no primary assembly file, the toplevel file does not include haplotype sequences)')
-        command = 'lftp -e "mget *.dna.toplevel.fa.gz  ; bye" '
+        command = 'lftp -e "mget *.dna.toplevel.fa.gz; bye" '
         command = command + download_folder
         os.system(command)
+
+    print('Unzipping FASTA files')
+    os.system('gunzip *.fa.gz') 
+
+    # For many Nextflow pipelines a single FASTA file is required
+    # So record original filenames, concatenated into a single file and then move
+    # original file to a new location for deletion
+    file_lookup = os.getcwd() + '/*.fa'
+    fasta_files_downloaded = glob.glob(file_lookup)
+
+    # Write file list
+    fasta_summary_list = 'original_fasta_files_list.txt'
+    with open(fasta_summary_list, 'w') as f_out:
+        for file in fasta_files_downloaded:
+            file = os.path.basename(file)
+            f_out.write(file + '\n')
+    f_out.close() 
+
+    # Create concatenated file
+    fasta_files_downloaded = ' '.join(fasta_files_downloaded)
+    combined_fasta_file = species + '__' + assembly + '__release' + str(release) + '.dna.fa'
+    print('Combining FASTA files into: ' + combined_fasta_file)
+    command = f'cat {fasta_files_downloaded} > {combined_fasta_file}'
+    os.system(command)
+
+    # Move file(s) to temporary folder
+    print('Combining original FASTA files into temporary FASTA folder ' + temporary_fasta_folder)
+    command = f'mv {fasta_files_downloaded} {temporary_fasta_folder}'
+    os.system(command)
 
 
 ####################################
@@ -98,7 +130,6 @@ def download_ensembl_gtf(species, assembly, release):
     command = 'lftp -e "mget *.' + release + '.gtf.gz; bye" '
     command = command + download_folder
     os.system(command)
-
 
 
 ####################################
@@ -293,6 +324,11 @@ def make_overview_file(genomes_to_download_list):
 #########################################
 def main():
 
+    # Fistly, create the temporary folder to where 'unwanted' FASTA are moved
+    # The concatenated FASTA file is retained
+    if not os.path.exists(temporary_fasta_folder):
+        os.makedirs(temporary_fasta_folder)
+
     # Import genomes to download list (csv file)
     genomes_to_download_list = pd.read_csv(options.genome_list)
     print("Writing genome files to " + genome_ref_outdir)
@@ -321,7 +357,7 @@ def main():
             os.makedirs(fasta_folder)
             os.chdir(fasta_folder)
             download_ensembl_fasta(species, assembly, release)
-            os.system('gunzip *.fa.gz')
+            #os.system('gunzip *.fa.gz')
         else:
             print('Skipping - FASTQ folder already exists: ' + fasta_folder)
 
