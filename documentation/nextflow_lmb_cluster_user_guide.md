@@ -44,7 +44,39 @@ Gernally users will access the cluster from PCs running Windows or Macs running 
      
         ssh -Y hex
 
-Then enter your cluster password (which should have been sent to you after you registered for cluster access.)
+Then enter your cluster password (which should have been sent to you after you registered for cluster access.)  When you successfully login, a message will be dispayed, usually infroaming qyou when you last logged in.
+
+# Getting to grips with Linux
+
+Unlike Macs which run the iOS operating sytem, or PCs which run the Windows, our compute cluster runs a Linux operating system.  This Linux operating system may seem unfamilair to first-time users, since it does not receive input from the user who moves a mouse pointer to click icons on the screen.  Instead the user types instructions into what is know as the 'command line' which tell the cluster as to what to do.
+
+On your screen the commandline will look similar to the text below:
+
+        [username@hex ~]$
+
+Try it yourself, type the following command, tells you toady's date (remember to press enter after typing the command):
+        date
+
+So, this command-line may at first seem much less user-friendly than the more familair Windows or iOS operating systems.  But actually the command line is very versatile, allowing the user to perform complex tasks with greater ease and speed than can be acheived by dragging and dropping icons with a mouse etc.  It takes a bit of practice to become familialr with Linux 
+
+While there are many Linux commands, users will tend to mainly use the commands listed below.
+
+ls - list contents of a directory
+cd - change directory
+cp - copy
+mv - move / rename files or folders
+rm - remove file
+mkdir - create a directory
+rmdir - remove a directory
+cat - print the contents of a file
+nano - edit the contents of a file
+pwd - print the address of the current working directory
+
+We shan't give a more detailed overview of Linux here, for it is covered excellently in many places.  For example, try watching this [10-minute video to understand Linux](https://www.youtube.com/watch?v=J2zquYPJbWY)
+
+There are also a series of [very short tutorials](http://info.ee.surrey.ac.uk/Teaching/Unix/) produced by the University of Surrey.  Have a quick look at the first four tutorials and you should have a good idea of the most useful Linux commands.
+
+And finally, here is a link to a useful [Linux Cheat Sheet](http://sites.tufts.edu/cbi/files/2013/01/linux_cheat_sheet.pdf)
 
 ## First-time setup
 
@@ -109,13 +141,29 @@ Sorry that was little bit complicated, but you only have to do this once.
 
 
 
-# Getting to grips with Linux
+## Cluster Commands
+So, the compute cluster uses Linux as its operating system, but in addition to this a cluster needs special software to enable all the compute nodes and head node(s) to communicate with on another and the data storage arrays.  Our cluster performs this task with software called Slurm.
 
+The basic concept is that user logs in to the head node (hex) and then uses Slurm to submit a job (compuational task) to one or more compute nodes.  Dividing work between multiple cores and nodes is a way to speed up a job (parrelelisation).
 
+Fortunately, to use Nextflow you don't need to learn about in and depth - Nextflow uses Slurm, but acts and interface between you and Slurm.  There are a small number of Slurm commands that are useful however when trying to keep track of your running jobs.
 
-# Cluster Commands
+To list the jobs running on the cluster (for all users):
 
-# Copying data from your machine to the cluster
+        squeue
+
+To list only your jobs running on the cluster:
+
+     squeue -u $USER
+
+You will notice that your jobs will be listed once you set off Nextflow pipelines.
+ 
+# Copying data from your machine to the cluster (and vice versa)
+
+So you've got data on your personal computer that you would like to analyse on the cluster.  How do you copy the data across?  We recommend the free software tool [Cyberduck.](https://cyberduck.io/)  Simply download the version of the software relavant to your operating system.  Open the software and create a bookmark with hex as the server.  Use an sftp connection and provide your username and password.
+
+[video]
+
 
 # Running Nextflow
 
