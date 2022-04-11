@@ -65,14 +65,23 @@ So, this command line may at first seem much less user-friendly than the more fa
 While there are many Linux commands, users will tend to mainly use the commands listed below.
 
 ls - list contents of a directory
+
 cd - change directory
+
 cp - copy
+
 mv - move / rename files or folders
+
 rm - remove file
+
 mkdir - create a directory
+
 rmdir - remove a directory
+
 cat - print the contents of a file
+
 nano - edit the contents of a file
+
 pwd - print the address of the current working directory
 
 
@@ -169,9 +178,9 @@ To list only your jobs running on the cluster:
 (You will notice that your jobs will be listed once you set off Nextflow pipelines.)
  
 ### Copying data from your machine to the cluster (and vice versa)
-So you've got data on your personal computer that you would like to analyse on the cluster.  How do you copy the data across?  We recommend using the free software tool [Cyberduck.](https://cyberduck.io/)  Simply download the version of the software relevant to your operating system.  Open the software and create a bookmark with hex as the server.  Use an sftp connection and provide your username and password.  Watch the video below for more details on how to do this.
+So you've got data on your personal computer that you would like to analyse on the cluster.  How do you copy the data across?  We recommend using the free software tool [FileZilla.](https://filezilla-project.org/)  Simply download the version of the software relevant to your operating system.  Open the software and login to the hex server using an sftp connection, and your cluster username and password.  Use Port 22.  Watch the video below for more details on how to do this.
 
-[video]
+[![Copying data from your machine to the cluster (and vice versa)](https://img.youtube.com/vi/6O98aPVWfE0/0.jpg)](https://youtu.be/6O98aPVWfE0)
 
 ---
 
