@@ -101,6 +101,7 @@ Once you have logged-in, there are a couple of commands you should run once to s
         cp ~admin/{.bashrc,.profile} $HOME
         ypchsh
 
+
     Then, follow the on-screen prompts and choose bash as your shell.
 
 
