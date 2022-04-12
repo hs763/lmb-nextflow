@@ -46,7 +46,7 @@ Generally, users will be using PCs running Windows or Macs running iOS.  These d
 
         ssh -Y hex
 
-Then enter your cluster password (which should have been sent to you after you registered for cluster access).   When you successfully login, a message will be displayed in the terminal window - usually informing you when you last logged in.
+    Then enter your cluster password (which should have been sent to you after you registered for cluster access).   When you successfully login, a message will be displayed in the terminal window - usually informing you when you last logged in.
 
 
 ### Getting to grips with Linux
@@ -55,7 +55,7 @@ Unlike Macs (which run iOS) or PCs (which run Windows), our compute cluster runs
 On your screen the command line will look similar to the text below:
 
     [username@hex ~]$
-
+    
 Try it yourself - type the following command, which will report back today's date (remember to press enter after typing the command):
         
     date
@@ -90,36 +90,34 @@ And finally, here is a link to a useful [Linux Cheat Sheet](http://sites.tufts.e
 ### First-time setup
 Once you have logged-in, there are a couple of commands you should run once to setup your system to be able to run Nextflow.
 
-1.  We recommend using the 'bash' shell by default, instead of 'tcsh'.  Don't worry about this terminology if you haven't heard it before, simply put bash and tcsh are slightly different dialects of the same language.   When you enter commands into the terminal window you have just opened (also know as the shell), using bash or tcsh will sometimes result in different operations.  
+1.  We recommend using the 'bash' shell by default, instead of 'tcsh'.  Don't worry about this terminology if you haven't heard it before, simply put bash and tcsh are slightly different dialects of the same language.   When you enter commands into the terminal window you have just opened (also know as the shell), using bash or tcsh will sometimes result in different operations.  Firstly, just check whether you are using bash or tcsh.  Enter in the command line:
 
-Firstly, just check whether you are using bash or tcsh.  Enter in the command line:
-        
-        echo $SHELL
+        echo $SHELL 
 
-If the output reports bash, then you do not need to change the shell.  However, if tcsh is reported instead, then follow Step 2 below.
+    If the output reports bash, then you do not need to change the shell.  However, if tcsh is reported instead, then follow Step 2 below.
 
-2.  To set the bash shell permanently enter:
+2)  To set the bash shell permanently enter:
 
         cp ~admin/{.bashrc,.profile} $HOME
         ypchsh
 
-Then, follow the on-screen prompts and choose bash as your shell.
+    Then, follow the on-screen prompts and choose bash as your shell.
 
 
 3.  Add Nextflow to your path.  This simply means that when you type 'nextflow' in the command-line, your system will recognise that this is a command and will subsequently run the Nextflow software.
 
         nano ~/.bashrc
 
-This will start a very basic text editor (called Nano) which has opened a hidden configuration file named .basrc.  (You will be already familiar with text editors - Notepad on a Windows system is a well-known example).  Use the UP/DOWN arrows to go to the end of the file.  Now copy and paste the following text at the end of the file.
+    This will start a very basic text editor (called Nano) which has opened a hidden configuration file named .basrc.  (You will be already familiar with text editors - Notepad on a Windows system is a well-known example).  Use the UP/DOWN arrows to go to the end of the file.  Now copy and paste the following text at the end of the file.
 
         export PATH="/net/nfs1/public/genomics/soft/bin:$PATH"
 
-To save and exit the text editor type:
+    To save and exit the text editor type:
 ctrl + o (simultaneously pressing both buttons)
 enter
 ctrl + x (simultaneously pressing both buttons)
 
-This will exit the text editor. 
+    This will exit the text editor. 
 
 4.  Logout of the cluster 
 
@@ -131,26 +129,26 @@ This will exit the text editor.
 
         echo $SHELL
 
-This should report bash as the shell and not tcsh.
+    This should report bash as the shell and not tcsh.
 
 7. Set up nextflow for the first time by entering the following:
    
         nextflow
 
-This will make a series of changes to your system
+    This will make a series of changes to your system
 
 
 8. Nextflow should now be up and running for you on the cluster.  To check, enter:
         
         nextflow
 
-The Nextflow help message should now be printed to the screen
+    The Nextflow help message should now be printed to the screen
 
-Now try:
+    Now try:
 
         nextflow run hello
 
-A welcome message should be printed to the screen
+    A welcome message should be printed to the screen
 
 Sorry that was a little bit complicated, but you only have to do this once.
 
@@ -164,11 +162,11 @@ Fortunately, to use Nextflow you don't need to learn about Slurm in any real det
 
 To list the jobs running on the cluster (for all users):
 
-        squeue
+    squeue
 
 To list only your jobs running on the cluster:
 
-     squeue -u $USER
+    squeue -u $USER
 
 (You will notice that your jobs will be listed once you set off Nextflow pipelines.)
  
@@ -196,9 +194,7 @@ So, every pipeline has its specific set of instructions to get the pipeline runn
 
 To assist users in running pipelines we have put together [GUIde Piper](http://nextflow.lmb.internal/), which is available on the LMB intranet.  At present all the user needs to do when going to GUIde Piper is to select the desired pipeline (e.g. RNA-seq, CHip-seq), select the data and metadata file locations and the reference genome to map against.  GUIde Piper will then produce a command that the user can copy and paste into the Cluster command line to start Nextflow running.
 
-<img src="assets/GUIde_Piper_logo.png" alt="drawing" width="100"/>
-
-[Video]
+[![GUIde Piper Tutorial](https://img.youtube.com/vi/PPEneJfFsOI/0.jpg)](https://youtu.be/PPEneJfFsOI)
 
 ---
 
