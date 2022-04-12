@@ -3,19 +3,19 @@
 # Running NGS pipelines with Nextflow on the LMB cluster
 
 ## Introduction
-For the past decade Next Generation Sequencing (NGS) has been used ever more frequently in molecular biology studies, finding uses in new experimental techniques and applications.  Processing and NGS datasets is far from trivial however, for it requires substantial computation resources in terms of data storage, RAM (working memory) and processing power.  
+For the past decade Next Generation Sequencing (NGS) has been used ever more frequently in molecular biology studies, finding uses in new experimental techniques and applications.  Processing and NGS datasets is far from trivial however, for it requires substantial computational resources in terms of data storage, RAM (working memory) and processing power.  
 
-Here at the LMB we have a powerful compute cluster available to researchers which can run NGS computational pipelines (note: a pipeline is simply a sequence of linked computational operations).  This guide provides an overview of how to access the computer cluster and run these pipelines. 
+Here at the LMB we have a powerful compute cluster available to researchers which can run NGS computational pipelines (note: a pipeline is simply a sequence of linked computational operations).  This guide provides an overview of how to access the **compute cluster** and run these pipelines. 
 
 ### What is NGS data?
-Next-generation sequencing (NGS) is a massively parallel sequencing technology that offers ultra-high throughput.  The technology can be used for a wide range of applications, such as determining the genomic sequence of an organism, the expression levels of all the genes in a tissues or even to identify epigenetic modifications or genomic conformational changes.
+Next-generation sequencing (NGS) is a massively parallel sequencing technology that offers ultra-high throughput.  The technology can be used for a wide range of applications, such as determining the genomic sequence of an organism, the expression levels of all the genes in a tissue or even to identify epigenetic modifications or genomic conformational changes.
 
-The most commonly used NGS technology is the Illumina platform which generates millions to billions of short reads (typically 50 - 300bp in length).  Should longer reads be required, then researchers can opt for PacBio or Oxford Nanopore platforms which generate much longer, but far fewer reads.  Typical RNA-seq, ChIP-seq or ATAC-seq experiments will use the Illumina technology.  
+The most commonly used NGS technology is the Illumina platform which generates millions to billions of short reads (typically 50 - 300bp in length) per run.  Should longer reads be required, then researchers can opt for PacBio or Oxford Nanopore platforms which generate much longer, but far fewer reads.  Typical RNA-seq, ChIP-seq or ATAC-seq experiments will use the Illumina technology.  
 
 Click on the video below to learn more about the Illumina NGS platform.
 [![Overview of Illumina Sequencing](https://img.youtube.com/vi/fCd6B5HRaZ8/0.jpg)](https://youtu.be/fCd6B5HRaZ8)
 
-The standard data output from these sequences is known as [FASTQ](https://en.wikipedia.org/wiki/FASTQ_format).  Such FASTQ files are essentially text files which record the sequence of each read, along with an associated quality score which provide an estimate of the reliability of each base call. These files (usually in conjunction with genome reference and relavent metadata files) are processed by NGS bioinformatics pipelines .
+The standard data output from these sequences is known as [FASTQ](https://en.wikipedia.org/wiki/FASTQ_format).  Such FASTQ files are essentially text files which record the sequence of each read, along with an associated quality score which provide an estimate of the reliability of each base call. These files (usually in conjunction with genome reference and relevant metadata files) are processed by NGS bioinformatics pipelines .
 
 
 ### What is a compute (or computer) cluster?
@@ -64,30 +64,25 @@ So, this command line may at first seem much less user-friendly than the more fa
 
 While there are many Linux commands, users will tend to mainly use the commands listed below.
 
-ls - list contents of a directory
+| Command | Function                                 |
+| ------- | ---------------------------------------- |
+| cat     | print the contents of a file             |
+| cd      | change directory                         |
+| cp      | copy                                     |
+| ls      | list contents of a directory             |
+| mkdir   | create a directory                       |
+| mv      | move / rename files or folders           |
+| nano    | edit the contents of a file              |
+| pwd     | print current working directory location |
+| rm      | remove file                              |
+| rmdir   | remove a directory                       |
 
-cd - change directory
+We shall not give a more detailed overview of Linux here, but we have put together a short video describing how to use Linux on the Cluster.
 
-cp - copy
-
-mv - move / rename files or folders
-
-rm - remove file
-
-mkdir - create a directory
-
-rmdir - remove a directory
-
-cat - print the contents of a file
-
-nano - edit the contents of a file
-
-pwd - print the address of the current working directory
+[![Using Linux on the Compute Cluster)](https://img.youtube.com/vi/qzQalKHmb-U/0.jpg)](https://youtu.be/qzQalKHmb-U)
 
 
-We shall not give a more detailed overview of Linux here, for it is covered excellently in many places.  For example, try watching this [10-minute video to understand Linux.](https://youtu.be/J2zquYPJbWY)
-
-There are also a series of [very short tutorials](http://info.ee.surrey.ac.uk/Teaching/Unix/) produced by the University of Surrey.  Have a quick look at the first four tutorials and you should have a good idea of the most useful Linux commands.
+In addition, there are also a series of [very short tutorials](http://info.ee.surrey.ac.uk/Teaching/Unix/) produced by the University of Surrey.  Have a quick look at the first four tutorials and you should have a good idea of the most useful Linux commands.
 
 And finally, here is a link to a useful [Linux Cheat Sheet](http://sites.tufts.edu/cbi/files/2013/01/linux_cheat_sheet.pdf)
 
@@ -95,7 +90,7 @@ And finally, here is a link to a useful [Linux Cheat Sheet](http://sites.tufts.e
 ### First-time setup
 Once you have logged-in, there are a couple of commands you should run once to setup your system to be able to run Nextflow.
 
-1.  We recommend using the 'bash' shell by default, instead of 'tcsh'.  Don't worry about this terminology if you haven't heard it before, simply put bash and tcsh are slighly different dialects of the same language.   When you enter commands into the terminal window you have just opened (also know as the shell), using bash or tcsh will sometimes result in different operations.  
+1.  We recommend using the 'bash' shell by default, instead of 'tcsh'.  Don't worry about this terminology if you haven't heard it before, simply put bash and tcsh are slightly different dialects of the same language.   When you enter commands into the terminal window you have just opened (also know as the shell), using bash or tcsh will sometimes result in different operations.  
 
 Firstly, just check whether you are using bash or tcsh.  Enter in the command line:
         
@@ -108,14 +103,14 @@ If the output reports bash, then you do not need to change the shell.  However, 
         cp ~admin/{.bashrc,.profile} $HOME
         ypchsh
 
-Then, follow the on-screen prompts and chose bash as your shell.
+Then, follow the on-screen prompts and choose bash as your shell.
 
 
-3.  Add Nextflow to your path.  This simply means that when you type 'nextflow' in the command-line, your system will recognise that this is command and will subsequently run the Nextflow software.
+3.  Add Nextflow to your path.  This simply means that when you type 'nextflow' in the command-line, your system will recognise that this is a command and will subsequently run the Nextflow software.
 
         nano ~/.bashrc
 
-This will start a very basic text editor (called Nano) which has opened a hidden configuration file named .basrc.  (You will be already familiar with text editors - Notepad on a Windows system is a well-know example).  Use the UP/DOWN arrows to go to the end of the file.  Now copy and paste the following text at the end of the file.
+This will start a very basic text editor (called Nano) which has opened a hidden configuration file named .basrc.  (You will be already familiar with text editors - Notepad on a Windows system is a well-known example).  Use the UP/DOWN arrows to go to the end of the file.  Now copy and paste the following text at the end of the file.
 
         export PATH="/net/nfs1/public/genomics/soft/bin:$PATH"
 
@@ -157,7 +152,7 @@ Now try:
 
 A welcome message should be printed to the screen
 
-Sorry that was little bit complicated, but you only have to do this once.
+Sorry that was a little bit complicated, but you only have to do this once.
 
 
 ### Cluster Commands
@@ -178,7 +173,9 @@ To list only your jobs running on the cluster:
 (You will notice that your jobs will be listed once you set off Nextflow pipelines.)
  
 ### Copying data from your machine to the cluster (and vice versa)
-So you've got data on your personal computer that you would like to analyse on the cluster.  How do you copy the data across?  We recommend using the free software tool [FileZilla.](https://filezilla-project.org/)  Simply download the version of the software relevant to your operating system.  Open the software and login to the hex server using an sftp connection, and your cluster username and password.  Use Port 22.  Watch the video below for more details on how to do this.
+So you've got data on your personal computer that you would like to analyse on the cluster.  How do you copy the data across?  We recommend using the free software tool [FileZilla.](https://filezilla-project.org/)  
+
+Simply download the version of the software relevant to your operating system.  Open the software and login to the hex server using an sftp connection, and your cluster username and password.  Use Port 22.  Watch the video below for more details on how to do this.
 
 [![Copying data from your machine to the cluster (and vice versa)](https://img.youtube.com/vi/6O98aPVWfE0/0.jpg)](https://youtu.be/6O98aPVWfE0)
 
@@ -189,15 +186,15 @@ So you've got data on your personal computer that you would like to analyse on t
 
 It is worth pointing out that Nextflow is essentially a language to enable programmers to write bioinformatics pipelines.  Consequently, the Nextflow webpages may look heavy on the technical jargon, but the vast majority of this knowledge is not required for actually running a pipeline.
 
-The Nextflow pipelines we run at the LMB have been written as part of a collaboration of between teams of bioinformaticians across the globe.  These Nextflow pipeline constitute what is know as [nf-core](https://nf-co.re/).
+The Nextflow pipelines we run at the LMB have been written as part of a collaboration between teams of bioinformaticians across the globe.  These Nextflow pipeline constitute what is know as [nf-core](https://nf-co.re/).
 
 Not all the pipelines listed at nf-core are currently available on the LMB cluster, although we are willing to add more pipelines, should there be demand from researchers.  Also, we may write and make available bespoke pipelines should the necessity arise.
 
 
 ## Help with Nextflow commands with GUIde-Piper
-So, every pipeline has its specific set of instructions to get the pipeline running.  For many users new to bioinformaitcs and the command line, this can seem a little overwhelming - even with the guidance available here and on the nf-core website.
+So, every pipeline has its specific set of instructions to get the pipeline running.  For many users new to bioinformatics and the command line, this can seem a little overwhelming - even with the guidance available here and on the nf-core website.
 
-To assist users in running pipelines we have put together [GUIde Piper](http://nextflow.lmb.internal/), which is available on the LMB intranet.  At present all the user needs to do when going to GUIde Piper is to select the desired pipeline (e.g. RNA-seq, CHip-seq), select the data and metadata file locations and the reference genome to map against.  GUIde Piper will then produce a command that the user can copy and paste into the command line to set off Nextflow.
+To assist users in running pipelines we have put together [GUIde Piper](http://nextflow.lmb.internal/), which is available on the LMB intranet.  At present all the user needs to do when going to GUIde Piper is to select the desired pipeline (e.g. RNA-seq, CHip-seq), select the data and metadata file locations and the reference genome to map against.  GUIde Piper will then produce a command that the user can copy and paste into the Cluster command line to start Nextflow running.
 
 <img src="assets/GUIde_Piper_logo.png" alt="drawing" width="100"/>
 
