@@ -64,18 +64,18 @@ So, this command line may at first seem much less user-friendly than the more fa
 
 While there are many Linux commands, users will tend to mainly use the commands listed below.
 
-| Command | Function                                 |
-| ------- | ---------------------------------------- |
-| cat     | print the contents of a file             |
-| cd      | change directory                         |
-| cp      | copy                                     |
-| ls      | list contents of a directory             |
-| mkdir   | create a directory                       |
-| mv      | move / rename files or folders           |
-| nano    | edit the contents of a file              |
-| pwd     | print current working directory location |
-| rm      | remove file                              |
-| rmdir   | remove a directory                       |
+| **Command** | **Function**                                 |
+| ----------- | -------------------------------------------- |
+| cat         | print the contents of a file                 |
+| cd          | change directory                             |
+| cp          | copy                                         |
+| ls          | list contents of a directory                 |
+| mkdir       | create a directory                           |
+| mv          | move / rename files or folders               |
+| nano        | edit the contents of a file                  |
+| pwd         | print current working directory location     |
+| rm          | remove file                                  |
+| rmdir       | remove a directory                           |
 
 We shall not give a more detailed overview of Linux here, but we have put together a short video describing how to use Linux on the Cluster.
 
