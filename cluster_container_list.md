@@ -21,6 +21,7 @@ depot.galaxyproject.org-singularity-mulled-v2-8849acf39a43cdd6c839a369a74c0adc82
 depot.galaxyproject.org-singularity-mulled-v2-cf0123ef83b3c38c13e3b0696a3f285d3f20f15b-606b713ec440e799d53a2b51a6e79dbfd28ecf3e-0.img
 depot.galaxyproject.org-singularity-multiqc-1.11--pyhdfd78af_0.img
 depot.galaxyproject.org-singularity-perl-5.26.2.img
+depot.galaxyproject.org-singularity-picard-2.26.10--hdfd78af_0.img
 depot.galaxyproject.org-singularity-picard-2.26.7--hdfd78af_0.img
 depot.galaxyproject.org-singularity-preseq-3.1.2--h06ef8b0_1.img
 depot.galaxyproject.org-singularity-python-3.9--1.img
@@ -35,6 +36,7 @@ depot.galaxyproject.org-singularity-trim-galore-0.6.7--hdfd78af_0.img
 depot.galaxyproject.org-singularity-ucsc-bedclip-377--h0b8a92a_2.img
 depot.galaxyproject.org-singularity-ucsc-bedgraphtobigwig-377--h446ed27_1.img
 nfcore-atacseq-1.2.1.img
+nfcore-chipseq-1.2.2.img
 nfcore-scrnaseq-1.1.0.img
 
 
