@@ -96,11 +96,11 @@ Once you have logged-in, there are a couple of commands you should run once to s
 
     If the output reports bash, then you do not need to change the shell.  However, if tcsh is reported instead, then follow Step 2 below.
 
-2)  To set the bash shell permanently enter:
+
+2.  To set the bash shell permanently enter:
 
         cp ~admin/{.bashrc,.profile} $HOME
         ypchsh
-
 
     Then, follow the on-screen prompts and choose bash as your shell.
 
@@ -111,35 +111,62 @@ Once you have logged-in, there are a couple of commands you should run once to s
 
     This will start a very basic text editor (called Nano) which has opened a hidden configuration file named .basrc.  (You will be already familiar with text editors - Notepad on a Windows system is a well-known example).  Use the UP/DOWN arrows to go to the end of the file.  Now copy and paste the following text at the end of the file.
 
+        # Nextflow Setup
         export PATH="/net/nfs1/public/genomics/soft/bin:$PATH"
 
+    Then save the text:
+
+    ctrl + o (simultaneously pressing both buttons)
+
+    enter
+
+
+4. Add the latest version of Java to your path.
+   
+   By default the cluster may using an older version of Java that is not compatible with Nextflow, but this change to your configuration will ensure that the latest version of Java will be used.
+   
+   With the ~/.bashrc configuration file still open in nano, copy and paste the following text to the bottom of file:
+
+        # Java setup
+        JAVA=$(alternatives --display java | awk '/family java-latest/ {print $1 }')
+        JAVA_HOME=${JAVA%%/bin/java}
+        export PATH=${JAVA%%/java}:$PATH`
+
+        
     To save and exit the text editor type:
-ctrl + o (simultaneously pressing both buttons)
-enter
-ctrl + x (simultaneously pressing both buttons)
+
+    ctrl + o (simultaneously pressing both buttons)
+
+    enter
+
+    ctrl + x (simultaneously pressing both buttons)
 
     This will exit the text editor. 
 
-4.  Logout of the cluster 
+
+5.  Logout of the cluster 
 
         exit
 
-5. Log back in again to the cluster, as you did earlier (i.e. ssh -Y hex).  
 
-6. To test your changes, enter the following:
+6. Log back in again to the cluster, as you did earlier (i.e. ssh -Y hex).  
+
+
+7. To test your changes, enter the following:
 
         echo $SHELL
 
     This should report bash as the shell and not tcsh.
 
-7. Set up nextflow for the first time by entering the following:
+
+8. Set up nextflow for the first time by entering the following:
    
         nextflow
 
     This will make a series of changes to your system
 
 
-8. Nextflow should now be up and running for you on the cluster.  To check, enter:
+9. Nextflow should now be up and running for you on the cluster.  To check, enter:
         
         nextflow
 
@@ -147,7 +174,7 @@ ctrl + x (simultaneously pressing both buttons)
 
     Now try:
 
-        nextflow run hello
+        nextflow run -dsl1 hello
 
     A welcome message should be printed to the screen
 
