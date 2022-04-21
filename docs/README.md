@@ -237,7 +237,7 @@ The following sections discuss the pipelines currently available on the compute 
 
 Create a file listing on a separate line all the ids to process.
 
-**Example Nextflow command:**
+**Example Nextflow command (use GUIde-Piper for latest recommended command):**
 
     nextflow run nf-core/fetchngs -r 1.5 --input to_download.txt -config /public/singularity/containers/nextflow/lmb-nextflow/lmb.config -queue-size 4 -bg
 
@@ -261,7 +261,7 @@ Create a file listing on a separate line all the ids to process.
 
 Strandedness options: 'unstranded', 'forward', 'reverse'
 
-**Example Nextflow command:**
+**Example Nextflow command (use GUIde-Piper for latest recommended command):**
 
     nextflow run nf-core/rnaseq -r 3.5 --input samplesheet.csv --genome GRCh38_v102 -config /public/singularity/containers/nextflow/lmb-nextflow/lmb.config -bg
 
@@ -281,7 +281,7 @@ Input FASTQ files need the extension ".fastq.gz" or ".fq.gz"
 
 [Click here for more details on making the design file](https://nf-co.re/chipseq/1.2.2/usage#multiple-replicates)
 
-**Example Nextflow command:**
+**Example Nextflow command (use GUIde-Piper for latest recommended command):**
 
     nextflow run nf-core/chipseq -r 1.2.2 --input design.csv --genome GRCm38_v100 -config /public/singularity/containers/nextflow/lmb-nextflow/lmb.config -bg
 
@@ -305,7 +305,7 @@ Input FASTQ files need the extension ".fastq.gz" or ".fq.gz"
 
 [Click here for more details on making the design file](https://nf-co.re/atacseq/1.2.1/docs/usage#multiple-replicates)
 
-**Example Nextflow command:**
+**Example Nextflow command (use GUIde-Piper for latest recommended command):**
 
     nextflow run nf-core/atacseq -r 1.2.1 --input design.csv --genome GRCh38_v102 -config /public/singularity/containers/nextflow/lmb-nextflow/lmb.config -bg
 
