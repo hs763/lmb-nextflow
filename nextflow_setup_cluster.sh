@@ -1,24 +1,26 @@
-#Nextflow setup LMB
-###################
+#Nextflow setup LMB Cluster
+###########################
 
-#Make directories if needed
-if [ ! -d "$HOME/bin/" ]; then
-  mkdir "$HOME/bin/"
-fi
-
-if [ ! -d "$HOME/nextflow_singularity_cache/" ]; then
-  mkdir "$HOME/nextflow_singularity_cache/"
-fi
-
-#Nextflow setup
-cd "$HOME/bin/"
-wget -qO- https://get.nextflow.io | bash
-
-# Nf-core setup
+# Java setup
+# Add the latest version of Java to your PATH
 echo "" >> ~/.bashrc
-echo "# Nextflow" >> ~/.bashrc
-echo 'export NXF_SINGULARITY_CACHEDIR="$HOME/nextflow_singularity_cache/"' >> ~/.bashrc
+echo "# Java" >> ~/.bashrc
+echo "JAVA=$(alternatives --display java | awk '/family java-latest/ {print $1 }')" >> ~/.bashrc
+echo "JAVA_HOME=${JAVA%%/bin/java}" >> ~/.bashrc
+echo "export PATH=${JAVA%%/java}:$PATH" >> ~/.bashrc
 
+
+# Nextflow Setup
+# Add Nextflow to your PATH
+echo '' >> ~/.bashrc
+echo '# Nextflow' >> ~/.bashrc
+echo 'export PATH="/net/nfs1/public/genomics/soft/bin:$PATH" >> ~/.bashrc' >> ~/.bashrc
+
+
+# Run Nextflow for the first time
+nextflow
+
+
+# NF core setup
 python3 -m pip install --upgrade pip
-pip3 install nf-core
-
+python3 -m pip install nf-core
