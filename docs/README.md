@@ -110,69 +110,31 @@ Once you have logged-in, there are a couple of commands you should run once to s
 
     Then, follow the on-screen prompts and choose bash as your shell.
 
-
-3.  Add Nextflow to your path.  This simply means that when you type 'nextflow' in the command-line, your system will recognise that this is a command and will subsequently run the Nextflow software.
-
-        nano ~/.bashrc
-
-    This will start a very basic text editor (called Nano) which has opened a hidden configuration file named .basrc.  (You will be already familiar with text editors - Notepad on a Windows system is a well-known example).  Use the UP/DOWN arrows to go to the end of the file.  Now copy and paste the following text at the end of the file.
-
-        # Nextflow Setup
-        export PATH="/net/nfs1/public/genomics/soft/bin:$PATH"
-
-    Then save the text:
-
-    ctrl + o (simultaneously pressing both buttons)
-
-    enter
-
-
-4. Add the latest version of Java to your path.
+3. Run the command:
    
-   By default the cluster may using an older version of Java that is not compatible with Nextflow, but this change to your configuration will ensure that the latest version of Java will be used.
-   
-   With the ~/.bashrc configuration file still open in nano, copy and paste the following text to the bottom of file:
+       curl -s https://raw.githubusercontent.com/StevenWingett/lmb-nextflow/main/nextflow_setup_cluster.sh | bash
 
-        # Java setup
-        JAVA=$(alternatives --display java | awk '/family java-latest/ {print $1 }')
-        JAVA_HOME=${JAVA%%/bin/java}
-        export PATH=${JAVA%%/java}:$PATH`
+    This command downloads and runs a configuration script. This will add Nextflow to your path (this simply means that when you type 'nextflow' in the command-line, your system will run the Nextflow software.  The script also adds the latest version of Java to your path (by default the cluster may be using an older version of Java that is not compatible with Nextflow).  The script also updates the pip3 installer and installs the Python3 module nf-core.
 
-        
-    To save and exit the text editor type:
+    (If you are a more experienced user and don't want to run the script, simply download it and use it as a guide to setup Nextflow in your cluster environment.)
 
-    ctrl + o (simultaneously pressing both buttons)
-
-    enter
-
-    ctrl + x (simultaneously pressing both buttons)
-
-    This will exit the text editor. 
-
-
-5.  Logout of the cluster 
+ 
+4.  Logout of the cluster 
 
         exit
 
 
-6. Log back in again to the cluster, as you did earlier (i.e. ssh -Y hex).  
+5. Log back in again to the cluster, as you did earlier (i.e. ssh -Y hex).  
 
 
-7. To test your changes, enter the following:
+6. To test your changes, enter the following:
 
         echo $SHELL
 
     This should report bash as the shell and not tcsh.
 
 
-8. Set up nextflow for the first time by entering the following:
-   
-        nextflow
-
-    This will make a series of changes to your system
-
-
-9. Nextflow should now be up and running for you on the cluster.  To check, enter:
+7. Nextflow should now be up and running for you on the cluster.  To check, enter:
         
         nextflow
 
