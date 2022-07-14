@@ -36,9 +36,7 @@ Access to a cluster is via the head node (in practice, some clusters may actuall
 ## Using the Cluster
 
 ### Getting a cluster account
-1. The first thing you need to do is get an account on the compute cluster via an [online form](http://nis1.lmb.internal/cgi-bin/newaccount.cgi).
-
-2. Once you have the account you will also need to email a member of [Scientific Computing](https://www.mrc-lmb.cam.ac.uk/scicomp/index.php?id=about) and ask that you are added to the cluster 'singularity' group.  (This is necessary for running the pre-installed NGS pipelines.)
+The first thing you need to do is get an account on the compute cluster via an [online form](http://bb8/userdash/slurm.cgi).
 
 ### Logging in to the cluster 
 The descriptions below describe how to access the compute cluster when working physically on-site, at the LMB.  **For remote access, you will first need to connect to the [ATG server.](https://www.mrc-lmb.cam.ac.uk/scicomp/index.php?id=ssh-x2go)** 
