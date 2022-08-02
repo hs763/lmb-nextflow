@@ -15,6 +15,7 @@ echo "export PATH=${JAVA%%/java}:$PATH" >> ~/.bashrc
 echo '' >> ~/.bashrc
 echo '# Nextflow' >> ~/.bashrc
 echo 'export PATH="/net/nfs1/public/genomics/soft/bin:$PATH" >> ~/.bashrc' >> ~/.bashrc
+source ~/.bashrc
 
 
 # Run Nextflow for the first time
@@ -22,5 +23,5 @@ nextflow
 
 
 # NF core setup
-python3 -m pip install --upgrade pip
-python3 -m pip install nf-core
+python3 -m pip install --user --upgrade pip
+python3 -m pip install --user nf-core
