@@ -26,4 +26,10 @@ nextflow
 python3 -m pip install --user --upgrade pip
 python3 -m pip install --user nf-core
 
+
+# Import useful Python modules
+python3 -m pip install --user numpy
+python3 -m pip install --user pandas
+
+
 source ~/.bashrc
