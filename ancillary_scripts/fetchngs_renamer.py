@@ -82,13 +82,16 @@ new_fastqs = samplesheet_data['linked_file'].tolist()
 #Create links to the files
 print('Creating links in results/fastq_nice_names/')
 os.mkdir('results/fastq_nice_names/')
-os.chdir('results/fastq_nice_names/')
 
 for i in range(len(original_fastqs)):
     original_fastq = original_fastqs[i]
-    original_fastq =  '../' + original_fastq[10:]  #Correct for moving into directory
     new_fastq = new_fastqs[i]
+
+
+    #Create the new filename
+    new_fastq = new_fastq.replace('results/fastq/', 'results/fastq_nice_names/')
     command = f'ln -s {original_fastq} {new_fastq}'  
+    print(command)
     os.system(command)
 
 print('Done')
