@@ -7,6 +7,8 @@ import glob
 import re
 import argparse
 import pandas as pd
+import subprocess
+import math
 
 parser = argparse.ArgumentParser(description='''
 Python3 script to download genomes.
@@ -197,12 +199,45 @@ def make_hisat2_index(hisat2_folder, fasta_folder, gtf_folder, species, assembly
 
 
 ####################################
+# determine_genome_size
+####################################
+
+def determine_genome_size(fasta_folder):
+    os.chdir(fasta_folder)
+    fasta_files = glob.glob('*.fa')
+    print('Determining the genome size of FASTA files in: ' + fasta_folder + '\n' + '\n'.join(fasta_files))
+
+    fasta_files = ' '.join(fasta_files)
+    command = f"grep -v '>' {fasta_files} | wc"     # Skip FASTA header lines
+    wc_output = subprocess.getoutput(command)
+    wc_output = wc_output.split() 
+
+    genome_size = int(wc_output[2]) - int(wc_output[0])    # Characters - new lines
+    print(f'Genome size determined to be {genome_size} bases')
+
+    return(genome_size)
+
+
+
+####################################
 # make_star_index
 ####################################
-def make_star_index(star_folder, fasta_folder, gtf_folder, species, assembly, release):
+def make_star_index(star_folder, fasta_folder, gtf_folder, species, assembly, release, genome_size):
 
     if not os.path.exists(star_folder):
 
+        # Determine the --genomeSAindexNbases value
+        # Documentation recommends: min(14, log2(GenomeLength)/2 - 1)
+        genomeSAindexNbases = (math.log2(genome_size) / 2) - 1
+        genomeSAindexNbases = math.floor(genomeSAindexNbases)
+        
+        if(genomeSAindexNbases > 14):   # Set between 10 and 14
+            genomeSAindexNbases = 14
+        elif(genomeSAindexNbases < 10):
+            genomeSAindexNbases = 10
+
+        print(f'Genome size is {genome_size}, so setting --genomeSAindexNbases to {genomeSAindexNbases}')
+        
         os.makedirs(star_folder)
         os.chdir(star_folder)
 
@@ -215,11 +250,12 @@ def make_star_index(star_folder, fasta_folder, gtf_folder, species, assembly, re
         genome_index_basename = '.'.join([species, assembly, 'dna', release, 'STAR_index'])
         os.makedirs(genome_index_basename)
 
-        command = f'STAR --runThreadN 8 --runMode genomeGenerate --genomeDir {genome_index_basename} --genomeFastaFiles {fasta_files} --sjdbGTFfile {gtf_file}'
+        command = f'STAR --runThreadN 8 --runMode genomeGenerate --genomeDir {genome_index_basename} --genomeFastaFiles {fasta_files} --sjdbGTFfile {gtf_file} --genomeSAindexNbases {genomeSAindexNbases}'
         os.system(command)
 
     else:
         print('Skipping - STAR folder already exists: ' + star_folder)
+
 
 
 ####################################
@@ -316,7 +352,6 @@ def make_overview_file(genomes_to_download_list):
 
 
 
-
 #########################################
 #########################################
 # MAIN
@@ -389,7 +424,8 @@ def main():
         # Build STAR index files
         if(genomes_to_download_metadata['star']):
             star_folder = release_outsubdir + f"/{folder_names['star']}/"
-            make_star_index(star_folder, fasta_folder, gtf_folder, species, assembly, release)
+            genome_size = determine_genome_size(fasta_folder)
+            make_star_index(star_folder, fasta_folder, gtf_folder, species, assembly, release, genome_size)
 
         
         # Create HiCUP digest files
