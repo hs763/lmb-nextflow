@@ -6,6 +6,8 @@ import pandas as pd
 import numpy as np
 import os
 
+import pprint
+
 
 ######################################################
 #Pandas Code
@@ -77,22 +79,26 @@ original_fastqs = samplesheet_data['fastq'].tolist()
 new_fastqs = samplesheet_data['linked_file'].tolist()
 ######################################################
 
+
+
 #######################################
 #Regular Python
 #Create links to the files
-print('Creating links in results/fastq_nice_names/')
-os.mkdir('results/fastq_nice_names/')
+output_folder = 'results/fastq_nice_names/'
+print(f'Creating links in {output_folder}')
+os.mkdir(output_folder)
+os.chdir(output_folder)
 
 for i in range(len(original_fastqs)):
     original_fastq = original_fastqs[i]
     new_fastq = new_fastqs[i]
 
+    # Make and run the symbolic link command
+    original_fastq = original_fastq.replace('results/fastq/', '../fastq/')
+    new_fastq = new_fastq.replace('results/fastq/', '')
 
-    #Create the new filename
-    new_fastq = new_fastq.replace('results/fastq/', 'results/fastq_nice_names/')
     command = f'ln -s {original_fastq} {new_fastq}'  
     print(command)
     os.system(command)
 
 print('Done')
-
