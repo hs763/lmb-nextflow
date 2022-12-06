@@ -9,6 +9,10 @@ echo "JAVA=\$(alternatives --display java | awk '/family java-17/ { print \$1}')
 echo "JAVA_HOME=\${JAVA%%/bin/java}" >> ~/.bashrc
 echo "export PATH=\${JAVA%%/java}:\$PATH" >> ~/.bashrc
 
+# Use Java now
+JAVA=$(alternatives --display java | awk '/family java-17/ { print $1}')
+JAVA_HOME=${JAVA%%/bin/java}
+export PATH=${JAVA%%/java}:$PATH
 
 # Nextflow Setup
 # Add Nextflow to your PATH
