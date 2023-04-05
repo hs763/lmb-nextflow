@@ -186,7 +186,7 @@ Not all the pipelines listed at nf-core are currently available on the LMB clust
 ## Help with Nextflow commands with GUIde-Piper
 So, every pipeline has its specific set of instructions to get the pipeline running.  For many users new to bioinformatics and the command line, this can seem a little overwhelming - even with the guidance available here and on the nf-core website.
 
-To assist users in running pipelines we have put together [GUIde Piper](http://nextflow.lmb.internal/), which is available on the LMB intranet.  At present all the user needs to do when going to GUIde Piper is to select the desired pipeline (e.g. RNA-seq, CHip-seq), select the data and metadata file locations and the reference genome to map against.  GUIde Piper will then produce a command that the user can copy and paste into the Cluster command line to start Nextflow running.
+To assist users in running pipelines we have put together [GUIde Piper](http://guidepiper/), which is available on the LMB intranet.  At present all the user needs to do when going to GUIde Piper is to select the desired pipeline (e.g. RNA-seq, CHip-seq), select the data and metadata file locations and the reference genome to map against.  GUIde Piper will then produce a command that the user can copy and paste into the Cluster command line to start Nextflow running.
 
 [![GUIde Piper Tutorial](https://img.youtube.com/vi/PPEneJfFsOI/0.jpg)](https://youtu.be/PPEneJfFsOI)
 
