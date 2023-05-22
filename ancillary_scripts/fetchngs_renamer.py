@@ -5,6 +5,7 @@
 import pandas as pd
 import numpy as np
 import os
+import re
 
 import pprint
 
@@ -71,6 +72,7 @@ samplesheet_data['linked_file'] = (samplesheet_data['linked_file'] +
                                    samplesheet_data['file_extension']
                                   )
 
+samplesheet_data['linked_file'] = samplesheet_data['linked_file'].str.replace(r'([^A-z0-9\/\.\+-]+)', '_', regex=True)    # Remove not allowed characters from the ouput filename
 samplesheet_data = samplesheet_data[['fastq', 'linked_file']]
 
 
