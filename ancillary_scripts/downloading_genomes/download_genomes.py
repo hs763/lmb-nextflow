@@ -351,6 +351,27 @@ def make_overview_file(genomes_to_download_list):
     return(genome_overview_text)
 
 
+####################################
+# determine_effective_genome_size
+####################################
+# def determine_effective_genome_size(fasta_folder):
+#     os.chdir(fasta_folder)
+#     fasta_files = glob.glob('*.fa')
+#     print('Determining the effective genome size of FASTA files in: ' + fasta_folder + '\n' + '\n'.join(fasta_files))
+
+#     fasta_files = ' '.join(fasta_files)
+#     print(os.path.realpath()) 
+#     command = f'python3 ../external_scripts/unique-kmers.py -k 100 {fasta_files}'
+#     print('Command: ' + command)
+#     effective_genome_size = subprocess.getoutput(command)
+#     effective_genome_size = effective_genome_size.split('\n')[-1].split()[-1]   #After last white space on last line 
+#     print('Genome size: ' + effective_genome_size)
+#     print(f'Effective genome size determined to be {effective_genome_size} bases')
+#     effective_genome_size = int(effective_genome_size)
+
+#     return(effective_genome_size)
+
+
 
 #########################################
 #########################################
