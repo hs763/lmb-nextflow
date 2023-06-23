@@ -5,10 +5,14 @@
 # Add the latest version of Java to your PATH
 echo "" >> ~/.bashrc
 echo "# Java" >> ~/.bashrc
-echo "JAVA=$(alternatives --display java | awk '/family java-latest/ {print $1 }')" >> ~/.bashrc
-echo "JAVA_HOME=${JAVA%%/bin/java}" >> ~/.bashrc
-echo "export PATH=${JAVA%%/java}:$PATH" >> ~/.bashrc
+echo "JAVA=\$(alternatives --display java | awk '/family java-17/ { print \$1}')" >> ~/.bashrc
+echo "JAVA_HOME=\${JAVA%%/bin/java}" >> ~/.bashrc
+echo "export PATH=\${JAVA%%/java}:\$PATH" >> ~/.bashrc
 
+# Use Java now
+JAVA=$(alternatives --display java | awk '/family java-17/ { print $1}')
+JAVA_HOME=${JAVA%%/bin/java}
+export PATH=${JAVA%%/java}:$PATH
 
 # Nextflow Setup
 # Add Nextflow to your PATH
