@@ -26,17 +26,16 @@ log.info """\
 process FASTQC {
 
     publishDir params.outdir, mode:'copy'
-
+    
     input:
     path(reads)
 
     output:
-    path "fastqc_logs"
+    path ('*')
 
     script:
     """
-    mkdir fastqc_logs
-    fastqc --threads 4 -o fastqc_logs -f fastq -q ${reads}
+    fastqc --threads 4 -f fastq -q ${reads}
     """
 }
 
@@ -44,7 +43,6 @@ process FASTQC {
  * Multi-genome screen
  */
 process FASTQ_SCREEN {
-
     publishDir params.outdir, mode:'copy'
 
     input:
@@ -52,15 +50,13 @@ process FASTQ_SCREEN {
     path (config)
 
     output:
-    path "fastq_screen_logs"
+    path "*"
 
     script:
     """
-    mkdir fastq_screen_logs
     fastq_screen --conf ${config} ${reads}
     """
 }
-
 
 /*
  * Overall summary
@@ -85,14 +81,13 @@ process MULTIQC {
 workflow {
     
     Channel
-        .fromPath("${params.reads_folder}/*{.fastq.gz,.fq.gz}", checkIfExists: true)
+        .fromPath("${params.reads_folder}/*{.fastq.gz,.fq.gz,.fastq,.fq}", checkIfExists: true)
         .set { reads_ch }
 
     fastqc_ch = FASTQC(reads_ch)
-    fastq_screen_ch = FASTQ_SCREEN(reads_ch, ${params.config_file})
+    fastq_screen_ch = FASTQ_SCREEN(reads_ch, params.config_file)
 
     MULTIQC(fastq_screen_ch.mix(fastqc_ch).collect())
-    //MULTIQC(fastqc_ch)
 }
 
 workflow.onComplete {
