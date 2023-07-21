@@ -1,0 +1,2 @@
+tool,db_name,db_params,db_path
+centrifuge,db1,,/public/genomics/TAXPROFILER_DATABASES/CENTRIFUGE/p_compressed+h+v.tar.gz
