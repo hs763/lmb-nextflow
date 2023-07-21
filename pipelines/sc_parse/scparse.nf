@@ -39,6 +39,7 @@ process FASTQC {
 
     script:
     """
+    echo projectdir: ${projectDir}
     mkdir fastqc_${sample_id}_logs
     fastqc -o fastqc_${sample_id}_logs -f fastq -q ${reads}
     """
@@ -62,8 +63,8 @@ process SPIPE {
     """
     mkdir split_pipe_${sample_id}
     PATH=/share/miniconda/bin:/share/miniconda/envs/spipe/bin:$PATH
-    echo split-pipe --chemistry ${params.chemistry_version} --genome_dir ${genome_folder} --samp_list ${params.sample_file} --fq1 ${projectDir}/data/${reads[0]} --fq2 ${projectDir}/data/${reads[1]} --mode all --output_dir split_pipe_${sample_id}
-    split-pipe --chemistry ${params.chemistry_version} --genome_dir ${genome_folder} --samp_list ${params.sample_file} --fq1 ${projectDir}/data/${reads[0]} --fq2 ${projectDir}/data/${reads[1]} --mode all --output_dir split_pipe_${sample_id}
+    echo split-pipe --chemistry ${params.chemistry_version} --genome_dir ${genome_folder} --samp_list ${params.sample_file} --fq1 ${params.reads_folder}/${reads[0]} --fq2 ${params.reads_folder}/${reads[0]} --mode all --output_dir split_pipe_${sample_id}
+    split-pipe --chemistry ${params.chemistry_version} --genome_dir ${genome_folder} --samp_list ${params.sample_file} --fq1 ${params.reads_folder}/${reads[0]} --fq2 ${params.reads_folder}/${reads[1]} --mode all --output_dir split_pipe_${sample_id}
     """
 }
 
@@ -78,6 +79,7 @@ process PARSE_QC {
 
     input:
     path parse_matrix_folder
+    path sample_file
 
     output:
     path 'output.txt'
@@ -85,8 +87,8 @@ process PARSE_QC {
 
     script:
     """
-    Rscript ${projectDir}/bin/reformat_data.R ${params.sample_file}
-    Rscript ${projectDir}/bin/qc_cell.R ${parse_matrix_folder}/all-well/DGE_unfiltered sample_info_reformat.tsv sample_info_reformat.tsv > output.txt 
+    Rscript ${projectDir}/bin/reformat_data.R ${sample_file}
+    Rscript ${projectDir}/bin/qc_cell.R ${parse_matrix_folder}/all-well/DGE_unfiltered sample_info_reformat.tsv > output.txt 
     """
 }
 
@@ -120,7 +122,7 @@ workflow {
     fastqc_ch = FASTQC(read_pairs_ch)
     spipe_ch = SPIPE(read_pairs_ch, params.genome_folder)
 
-    PARSE_QC(spipe_ch)
+    PARSE_QC(spipe_ch, params.sample_file)
 
     MULTIQC(spipe_ch.mix(fastqc_ch).collect())
 }
