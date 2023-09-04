@@ -4,6 +4,11 @@ sudo singularity build biocontainers_fastqc_v0.11.9_cv8.sif docker://biocontaine
 # Build the MultiQC container
 sudo singularity build ewels_multiqc_v1.14.sif docker://ewels/multiqc:v1.14
 
+# Build the Parse Container
+Described in pbp.Dockerfile.  Uploaded to:
+https://hub.docker.com/repository/docker/swingett/pbp/general
+
+
 
 # Build the analysis script container
 sudo singularity build --sandbox shortcake/ docker:rnakato/shortcake
