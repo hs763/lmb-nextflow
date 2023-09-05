@@ -8,7 +8,9 @@ sudo singularity build ewels_multiqc_v1.14.sif docker://ewels/multiqc:v1.14
 Described in pbp.Dockerfile.  Uploaded to:
 https://hub.docker.com/repository/docker/swingett/pbp/general
 
-
+# Build the luca_r_environment container
+A custom container for use by Luca.  Uploaded to:
+https://hub.docker.com/repository/docker/swingett/luca_r_environment/general=
 
 # Build the analysis script container
 sudo singularity build --sandbox shortcake/ docker:rnakato/shortcake
