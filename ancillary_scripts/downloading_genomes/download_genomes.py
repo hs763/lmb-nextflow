@@ -38,6 +38,11 @@ The following are / maybe needed in path for this script to run:
            STAR,
            hicup_digester,
            gzip
+                                
+                                 
+For making the Parse genome a conda environment will need to be activated (
+see: https://support.parsebiosciences.com/hc/en-us/articles/17166220335636-Pipeline-Setup-and-Use-Current-Version- )
+
 ''')
 
 parser.add_argument("--genome_list", action='store', type=str,
@@ -60,7 +65,8 @@ folder_names = {        #To standardise folder names throughout code
                 'bowtie2' : 'Bowtie2_index',
                 'hisat2' : 'HISAT2_index',
                 'star' : 'STAR_index',
-                'hicup' : 'HiCUP_digest'
+                'hicup' : 'HiCUP_digest',
+                'parse' : 'Parse_index'
                 }
 
 
@@ -293,6 +299,35 @@ def make_hicup_digest_files(hicup_folder, fasta_folder, species, assembly, relea
 
 
 ####################################
+# make_parse_index
+####################################
+def make_parse_index(parse_folder, fasta_folder, gtf_folder, species, assembly, release):
+
+    if not os.path.exists(parse_folder):
+    
+        os.makedirs(parse_folder)
+        os.chdir(parse_folder)
+
+        fasta_files = glob.glob(f'{fasta_folder}/*.fa')
+        fasta_files = ' '.join(fasta_files)
+        gtf_file = glob.glob(f'{gtf_folder}/*.gtf')
+        gtf_file = gtf_file[0]
+
+        #Build index
+        genome_index_basename = '.'.join([species, assembly, 'dna', release, 'Parse_index'])
+        os.makedirs(genome_index_basename)
+
+        command = f'split-pipe --mode mkref --genome_name {genome_index_basename} --fasta {fasta_files} --genes {gtf_file} --output_dir {genome_index_basename}'
+        print('Command:')
+        print(command)
+        os.system(command)
+
+    else:
+        print('Skipping - Parse folder already exists: ' + parse_folder)
+
+
+
+####################################
 # make_overview_file
 ####################################
 def make_overview_file(genomes_to_download_list):
@@ -351,6 +386,9 @@ def make_overview_file(genomes_to_download_list):
     return(genome_overview_text)
 
 
+
+
+
 ####################################
 # determine_effective_genome_size
 ####################################
@@ -370,6 +408,7 @@ def make_overview_file(genomes_to_download_list):
 #     effective_genome_size = int(effective_genome_size)
 
 #     return(effective_genome_size)
+
 
 
 
@@ -454,7 +493,15 @@ def main():
             hicup_folder = release_outsubdir + f"/{folder_names['hicup']}/"
             make_hicup_digest_files(hicup_folder, fasta_folder, species, assembly, release)
 
+            make_parse_index(parse_folder, fasta_folder, gtf_folder, species, assembly, release)
+
+
+        # Build Parse index files
+        if(genomes_to_download_metadata['parse']):
+            parse_folder = release_outsubdir + f"/{folder_names['parse']}/"
+            make_parse_index(parse_folder, fasta_folder, gtf_folder, species, assembly, release)
         
+
     # Make overview file to be used in the config file
     genome_overview_text = make_overview_file(genomes_to_download_list)
     genome_overview_file = genome_ref_outdir + 'genome_overview.txt'
