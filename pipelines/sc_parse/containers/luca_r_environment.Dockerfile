@@ -25,6 +25,9 @@ RUN apt install vim=2:9.0.1672-1ubuntu2 -y
 RUN apt install r-base=4.3.1-4 -y
 RUN apt install r-base-dev=4.3.1-4 -y
 
+# Install Pandoc for rendering R markdown files
+RUN apt install -y pandoc=2.17.1.1-3ubuntu1
+
 #library( ggplot2 )
 RUN Rscript -e 'install.packages("ggplot2", version="3.4.3")' 
 
