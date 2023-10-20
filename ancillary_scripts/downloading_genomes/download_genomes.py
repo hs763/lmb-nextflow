@@ -57,7 +57,7 @@ options = args[0]   # Get the 2 arrays of known/unknown arguments from the tuple
 current_working_directory = os.getcwd()
 genome_ref_outdir = current_working_directory
 genome_ref_outdir = genome_ref_outdir + '/Genome_References/'
-temporary_fasta_folder = genome_ref_outdir + '/_tmp_original_fasta_files_to_delete'
+#temporary_fasta_folder = genome_ref_outdir + '/_tmp_original_fasta_files_to_delete'
 
 folder_names = {        #To standardise folder names throughout code
                 'fasta' : 'FASTA',
@@ -82,6 +82,7 @@ def download_ensembl_fasta(species, assembly, release):
     print("Downloading primary assembly sequences")
     command = 'lftp -e "mget *.dna.primary_assembly.* ; bye" '
     command = command + download_folder
+    print(f'command: {command}')
     os.system(command)
 
     # Did primary assembly download, if not download toplevel
@@ -93,6 +94,7 @@ def download_ensembl_fasta(species, assembly, release):
         print('(When there is no primary assembly file, the toplevel file does not include haplotype sequences)')
         command = 'lftp -e "mget *.dna.toplevel.fa.gz; bye" '
         command = command + download_folder
+        print(f'command: {command}')
         os.system(command)
 
     print('Unzipping FASTA files')
@@ -105,7 +107,7 @@ def download_ensembl_fasta(species, assembly, release):
     fasta_files_downloaded = glob.glob(file_lookup)
 
     # Write file list
-    fasta_summary_list = 'original_fasta_files_list.txt'
+    fasta_summary_list = 'original_nextflow_fasta_files_list.txt'
     with open(fasta_summary_list, 'w') as f_out:
         for file in fasta_files_downloaded:
             file = os.path.basename(file)
@@ -114,15 +116,38 @@ def download_ensembl_fasta(species, assembly, release):
 
     # Create concatenated file
     fasta_files_downloaded = ' '.join(fasta_files_downloaded)
-    combined_fasta_file = species + '__' + assembly + '__release' + str(release) + '.dna.fa'
+    combined_fasta_file = species + '__' + assembly + '__release' + str(release) + '.nextflow.genome.fa'
     print('Combining FASTA files into: ' + combined_fasta_file)
     command = f'cat {fasta_files_downloaded} > {combined_fasta_file}'
     os.system(command)
 
     # Move file(s) to temporary folder
-    print('Combining original FASTA files into temporary FASTA folder ' + temporary_fasta_folder)
-    command = f'mv {fasta_files_downloaded} {temporary_fasta_folder}'
+    #print('Combining original FASTA files into temporary FASTA folder ' + temporary_fasta_folder)
+    #command = f'mv {fasta_files_downloaded} {temporary_fasta_folder}'
+    #os.system(command)
+
+
+####################################
+# download_ensembl_fasta_cDNA
+####################################
+def download_ensembl_fasta_cdna(species, assembly, release):
+    cdna_file_extension = '*cdna.all.fa.gz'
+
+    print('Downloading FASTA files: ' + species + ' ' + assembly + ' (' + str(release) + ')')
+
+    ensembl_base = 'http://ftp.ensembl.org/pub/release-'
+    download_folder = ensembl_base + release + '/fasta/' + species + '/cdna/'
+
+    print("Downloading cDNA sequences")
+    command = f'lftp -e "mget {cdna_file_extension}; bye" '
+    command = command + download_folder
+    print(f'command: {command}')
     os.system(command)
+
+    print('Unzipping cDNA files')
+    command = f'gunzip {cdna_file_extension}'
+    os.system(command)
+
 
 
 ####################################
@@ -147,7 +172,7 @@ def make_bowtie2_index(bowtie2_folder, fasta_folder, species, assembly, release)
     
     if not os.path.exists(bowtie2_folder):
         os.chdir(fasta_folder)
-        fasta_files = glob.glob('*.fa')
+        fasta_files = glob.glob('*.nextflow.genome.fa')
         fasta_files = ','.join(fasta_files)
 
         #Build index
@@ -186,7 +211,7 @@ def make_hisat2_index(hisat2_folder, fasta_folder, gtf_folder, species, assembly
 
         # Make HISAT2 index
         os.chdir(fasta_folder)
-        fasta_files = glob.glob('*.fa')
+        fasta_files = glob.glob('.nextflow.genome.fa')
         fasta_files = ','.join(fasta_files)
         genome_index_basename = '.'.join([species, assembly, 'dna', release])
         command = f'hisat2-build {fasta_files} {genome_index_basename} > hisat2-build.out'
@@ -210,7 +235,7 @@ def make_hisat2_index(hisat2_folder, fasta_folder, gtf_folder, species, assembly
 
 def determine_genome_size(fasta_folder):
     os.chdir(fasta_folder)
-    fasta_files = glob.glob('*.fa')
+    fasta_files = glob.glob('*.nextflow.genome.fa')
     print('Determining the genome size of FASTA files in: ' + fasta_folder + '\n' + '\n'.join(fasta_files))
 
     fasta_files = ' '.join(fasta_files)
@@ -247,7 +272,7 @@ def make_star_index(star_folder, fasta_folder, gtf_folder, species, assembly, re
         os.makedirs(star_folder)
         os.chdir(star_folder)
 
-        fasta_files = glob.glob(f'{fasta_folder}/*.fa')
+        fasta_files = glob.glob(f'{fasta_folder}/*.nextflow.genome.fa')
         fasta_files = ' '.join(fasta_files)
         gtf_file = glob.glob(f'{gtf_folder}/*.gtf')
         gtf_file = gtf_file[0]
@@ -285,7 +310,7 @@ def make_hicup_digest_files(hicup_folder, fasta_folder, species, assembly, relea
         
         #Perform digest(s)
         for enzyme, seq in restriction_enzymes.items():
-            command = f'hicup_digester --re1 {seq},{enzyme} --genome {genome_index_basename} --zip *.fa'
+            command = f'hicup_digester --re1 {seq},{enzyme} --genome {genome_index_basename} --zip *.nextflow.genome.fa'
             os.system(command)
 
         #Move Digest files to new folder
@@ -308,7 +333,7 @@ def make_parse_index(parse_folder, fasta_folder, gtf_folder, species, assembly, 
         os.makedirs(parse_folder)
         os.chdir(parse_folder)
 
-        fasta_files = glob.glob(f'{fasta_folder}/*.fa')
+        fasta_files = glob.glob(f'{fasta_folder}/*.nextflow.genome.fa')
         fasta_files = ' '.join(fasta_files)
         gtf_file = glob.glob(f'{gtf_folder}/*.gtf')
         gtf_file = gtf_file[0]
@@ -350,7 +375,7 @@ def make_overview_file(genomes_to_download_list):
         # FASTA file(s)
         fasta_folder = release_outsubdir + f"/{folder_names['fasta']}/"  
         if os.path.exists(fasta_folder):
-            fasta_file = glob.glob(f'{fasta_folder}/*.fa')
+            fasta_file = glob.glob(f'{fasta_folder}/*.nextflow.genome.fa')
             if(len(fasta_file)):    # Anything found?
                 fasta_file = fasta_file[0]
                 genome_overview_text = genome_overview_text + f"\tfasta = '{fasta_file}'\n"
@@ -421,8 +446,8 @@ def main():
 
     # Fistly, create the temporary folder to where 'unwanted' FASTA are moved
     # The concatenated FASTA file is retained
-    if not os.path.exists(temporary_fasta_folder):
-        os.makedirs(temporary_fasta_folder)
+    #if not os.path.exists(temporary_fasta_folder):
+    #    os.makedirs(temporary_fasta_folder)
 
     # Import genomes to download list (csv file)
     genomes_to_download_list = pd.read_csv(options.genome_list)
@@ -452,6 +477,7 @@ def main():
             os.makedirs(fasta_folder)
             os.chdir(fasta_folder)
             download_ensembl_fasta(species, assembly, release)
+            download_ensembl_fasta_cdna(species, assembly, release)
             #os.system('gunzip *.fa.gz')
         else:
             print('Skipping - FASTQ folder already exists: ' + fasta_folder)
