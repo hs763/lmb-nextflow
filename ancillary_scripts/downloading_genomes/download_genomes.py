@@ -62,11 +62,11 @@ genome_ref_outdir = genome_ref_outdir + '/Genome_References/'
 folder_names = {        #To standardise folder names throughout code
                 'fasta' : 'FASTA',
                 'gtf' : 'GTF',
-                'bowtie2' : 'Bowtie2_index',
-                'hisat2' : 'HISAT2_index',
-                'star' : 'STAR_index',
-                'hicup' : 'HiCUP_digest',
-                'parse' : 'Parse_index'
+                'bowtie2' : 'Indices/Bowtie2_index',
+                'hisat2' : 'Indices/HISAT2_index',
+                'star' : 'Indices/STAR_index',
+                'hicup' : 'Misc/HiCUP_digest',
+                'parse' : 'Indices/Parse_index'
                 }
 
 
