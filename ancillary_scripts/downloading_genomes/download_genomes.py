@@ -131,7 +131,7 @@ def download_ensembl_fasta(species, assembly, release):
 # download_ensembl_fasta_cDNA
 ####################################
 def download_ensembl_fasta_cdna(species, assembly, release):
-    cdna_file_extension = '*cdna.all.fa.gz'
+    cdna_file_extension = '*.cdna.all.fa.gz'
 
     print('Downloading FASTA files: ' + species + ' ' + assembly + ' (' + str(release) + ')')
 
@@ -366,7 +366,7 @@ def make_overview_file(genomes_to_download_list):
         release = str(release)
         database = genomes_to_download_metadata['database']
 
-        release_outsubdir = genome_ref_outdir + '/'.join([database, species, assembly, 'Release_' + release])
+        release_outsubdir = genome_ref_outdir + '/'.join([species, database, assembly, 'Release_' + release])
 
         #Genome Name
         genome_name = species + '.' + assembly + '.release_' + release
@@ -468,7 +468,7 @@ def main():
         #database_source = 'Ensembl'
 
         print('Genome: ' + species + ' ' + assembly + ' (' + release + ')')
-        release_outsubdir = genome_ref_outdir + '/'.join([database, species, assembly, 'Release_' + release])
+        release_outsubdir = genome_ref_outdir + '/'.join([species, database, assembly, 'Release_' + release])
 
         # Download FASTA
         fasta_folder = release_outsubdir + f"/{folder_names['fasta']}/"
