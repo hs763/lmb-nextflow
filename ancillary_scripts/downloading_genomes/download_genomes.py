@@ -177,16 +177,16 @@ def make_bowtie2_index(bowtie2_folder, fasta_folder, species, assembly, release)
 
         #Build index
         genome_index_basename = '.'.join([species, assembly, 'dna', release])
-        command = 'bowtie2-build --version > bowtie2-build.out'
+        command = 'bowtie2-build --version > bowtie2-build_version.out'
         os.system(command)
-        command = f'bowtie2-build {fasta_files} {genome_index_basename} >> bowtie2-build.out'
+        command = f'bowtie2-build {fasta_files} {genome_index_basename} > bowtie2-build.out'
         os.system(command)
 
         #Move index files to new folder
         os.makedirs(bowtie2_folder)
         command = f'mv *.bt2 {bowtie2_folder}'
         os.system(command)
-        command = f'mv bowtie2-build.out {bowtie2_folder}'
+        command = f'mv *.out {bowtie2_folder}'
         os.system(command)
     else:
         print('Skipping - Bowtie2 folder already exists: ' + bowtie2_folder)
@@ -216,6 +216,8 @@ def make_hisat2_index(hisat2_folder, fasta_folder, gtf_folder, species, assembly
         fasta_files = glob.glob('.nextflow.genome.fa')
         fasta_files = ','.join(fasta_files)
         genome_index_basename = '.'.join([species, assembly, 'dna', release])
+        command = 'hisat2 --version > hisat2-version.out'
+        os.system(command)
         command = f'hisat2-build {fasta_files} {genome_index_basename} > hisat2-build.out'
         os.system(command)
 
@@ -223,7 +225,7 @@ def make_hisat2_index(hisat2_folder, fasta_folder, gtf_folder, species, assembly
         os.makedirs(hisat2_folder)
         command = f'mv *.ht2 {hisat2_folder}'
         os.system(command)
-        command = f'mv hisat2-build.out {hisat2_folder}'
+        command = f'mv *.out {hisat2_folder}'
         os.system(command)
 
     else:
@@ -283,6 +285,8 @@ def make_star_index(star_folder, fasta_folder, gtf_folder, species, assembly, re
         genome_index_basename = '.'.join([species, assembly, 'dna', release, 'STAR_index'])
         os.makedirs(genome_index_basename)
 
+        command = 'STAR --version > star_version.out'
+        os.system(command)
         command = f'STAR --runThreadN 8 --runMode genomeGenerate --genomeDir {genome_index_basename} --genomeFastaFiles {fasta_files} --sjdbGTFfile {gtf_file} --genomeSAindexNbases {genomeSAindexNbases}'
         os.system(command)
 
@@ -403,7 +407,7 @@ def make_overview_file(genomes_to_download_list):
         # STAR Index
         star_folder = release_outsubdir + f"/{folder_names['star']}/"
         if os.path.exists(star_folder):
-            genome_overview_text = genome_overview_text + f"\tstar = '{star_folder}'\n"
+            genome_overview_text = genome_overview_text + f"\tstar = '{star_folder}{species}.{assembly}.dna.{release}.STAR_index/'\n"
 
         # HiCUP Digest
         hicup_folder = release_outsubdir + f"/{folder_names['hicup']}/"
@@ -520,8 +524,6 @@ def main():
         if(genomes_to_download_metadata['hicup']):
             hicup_folder = release_outsubdir + f"/{folder_names['hicup']}/"
             make_hicup_digest_files(hicup_folder, fasta_folder, species, assembly, release)
-
-            make_parse_index(parse_folder, fasta_folder, gtf_folder, species, assembly, release)
 
 
         # Build Parse index files
