@@ -4,7 +4,7 @@ drosophila_melanogaster,BDGP6.32,105,Ensembl,,,1,1,1,1,0
 homo_sapiens,GRCh38,102,Ensembl,,,1,1,1,1,0
 mus_musculus,GRCm38,100,Ensembl,,,1,1,1,1,0
 mus_musculus,GRCm39,108,Ensembl,,,1,1,1,1,0
-rattus_norvegicus,mRatBN7.2,105,Ensembl,,,1,1,1,1,0
-pan_troglodytes,Pan_tro_3.0,105,Ensembl,,,1,1,1,1,0
-gorilla_gorilla,gorGor4,105,Ensembl,,,1,1,1,1,0
-macaca_mulatta,Mmul_10,105,Ensembl,,,1,1,1,1,0
+rattus_norvegicus,mRatBN7.2,110,Ensembl,,,1,1,1,1,0
+pan_troglodytes,Pan_tro_3.0,110,Ensembl,,,1,1,1,1,0
+gorilla_gorilla,gorGor4,110,Ensembl,,,1,1,1,1,0
+macaca_mulatta,Mmul_10,110,Ensembl,,,1,1,1,1,0
