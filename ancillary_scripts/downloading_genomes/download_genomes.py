@@ -213,7 +213,7 @@ def make_hisat2_index(hisat2_folder, fasta_folder, gtf_folder, species, assembly
 
         # Make HISAT2 index
         os.chdir(fasta_folder)
-        fasta_files = glob.glob('.nextflow.genome.fa')
+        fasta_files = glob.glob('*.nextflow.genome.fa')
         fasta_files = ','.join(fasta_files)
         genome_index_basename = '.'.join([species, assembly, 'dna', release])
         command = 'hisat2 --version > hisat2-version.out'
