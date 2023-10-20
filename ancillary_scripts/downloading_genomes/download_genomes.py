@@ -177,7 +177,9 @@ def make_bowtie2_index(bowtie2_folder, fasta_folder, species, assembly, release)
 
         #Build index
         genome_index_basename = '.'.join([species, assembly, 'dna', release])
-        command = f'bowtie2-build {fasta_files} {genome_index_basename} > bowtie2-build.out'
+        command = 'bowtie2-build --version > bowtie2-build.out'
+        os.system(command)
+        command = f'bowtie2-build {fasta_files} {genome_index_basename} >> bowtie2-build.out'
         os.system(command)
 
         #Move index files to new folder
