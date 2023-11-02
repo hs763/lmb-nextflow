@@ -171,6 +171,14 @@ def download_ensembl_gtf(species, assembly, release):
 def make_bowtie2_index(bowtie2_folder, fasta_folder, species, assembly, release):
     
     if not os.path.exists(bowtie2_folder):
+        os.makedirs(bowtie2_folder)
+
+    # Make a bowtie subfolder for this specific version of Bowtie2
+    command = 'bowtie2-build --version | head -1'
+    bowtie_version = subprocess.getoutput(command).split(' ')[-1]
+    bowtie2_version_specific_folder = f'{bowtie2_folder}/v{bowtie_version}'
+
+    if not os.path.exists(bowtie2_version_specific_folder):
         os.chdir(fasta_folder)
         fasta_files = glob.glob('*.nextflow.genome.fa')
         fasta_files = ','.join(fasta_files)
@@ -178,18 +186,19 @@ def make_bowtie2_index(bowtie2_folder, fasta_folder, species, assembly, release)
         #Build index
         genome_index_basename = '.'.join([species, assembly, 'dna', release])
         command = 'bowtie2-build --version > bowtie2-build_version.out'
+
         os.system(command)
         command = f'bowtie2-build {fasta_files} {genome_index_basename} > bowtie2-build.out'
         os.system(command)
 
         #Move index files to new folder
-        os.makedirs(bowtie2_folder)
-        command = f'mv *.bt2 {bowtie2_folder}'
+        os.makedirs(bowtie2_version_specific_folder)
+        command = f'mv *.bt2 {bowtie2_version_specific_folder}'
         os.system(command)
-        command = f'mv *.out {bowtie2_folder}'
+        command = f'mv *.out {bowtie2_version_specific_folder}'
         os.system(command)
     else:
-        print('Skipping - Bowtie2 folder already exists: ' + bowtie2_folder)
+        print('Skipping - Bowtie2 folder already exists: ' + bowtie2_version_specific_folder)
 
 
 
