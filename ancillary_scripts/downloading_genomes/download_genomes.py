@@ -208,6 +208,7 @@ def make_bowtie2_index(bowtie2_folder, fasta_folder, species, assembly, release)
 def make_hisat2_index(hisat2_folder, fasta_folder, gtf_folder, species, assembly, release):
     
     if not os.path.exists(hisat2_folder):
+        os.makedirs(hisat2_folder)
 
         #Make splice sites and exons file
         os.chdir(gtf_folder)
@@ -220,6 +221,12 @@ def make_hisat2_index(hisat2_folder, fasta_folder, gtf_folder, species, assembly
         command = f'extract_exons.py {gtf_file} > {exon_file}'
         os.system(command)
 
+    # Make a hisat2 subfolder for this specific version of hisat2
+    command = 'hisat2-build --version | head -1'
+    hisat2_version = subprocess.getoutput(command).split(' ')[-1]
+    hisat2_version_specific_folder = f'{hisat2_folder}/v{hisat2_version}'
+
+    if not os.path.exists(hisat2_version_specific_folder):
         # Make HISAT2 index
         os.chdir(fasta_folder)
         fasta_files = glob.glob('*.nextflow.genome.fa')
@@ -231,14 +238,14 @@ def make_hisat2_index(hisat2_folder, fasta_folder, gtf_folder, species, assembly
         os.system(command)
 
         #Move index files to new folder
-        os.makedirs(hisat2_folder)
-        command = f'mv *.ht2 {hisat2_folder}'
+        os.makedirs(hisat2_version_specific_folder)
+        command = f'mv *.ht2 {hisat2_version_specific_folder}'
         os.system(command)
-        command = f'mv *.out {hisat2_folder}'
+        command = f'mv *.out {hisat2_version_specific_folder}'
         os.system(command)
 
     else:
-        print('Skipping - HISAT2 folder already exists: ' + hisat2_folder)
+        print('Skipping - HISAT2 folder already exists: ' + hisat2_version_specific_folder)
 
 
 
