@@ -9,6 +9,7 @@ import argparse
 import pandas as pd
 import subprocess
 import math
+import re
 
 parser = argparse.ArgumentParser(description='''
 Python3 script to download genomes.
@@ -276,7 +277,18 @@ def determine_genome_size(fasta_folder):
 def make_star_index(star_folder, fasta_folder, gtf_folder, species, assembly, release, genome_size):
 
     if not os.path.exists(star_folder):
+        os.makedirs(star_folder)
 
+    # Make a STAR subfolder for this specific version of STAR
+    command = 'STAR --version | head -1'
+    star_version = subprocess.getoutput(command).split(' ')[-1]
+    # Remove 'STAR', if present, from front of version ouput
+    pattern= '^STAR_'
+    p = re.compile(pattern)
+    star_version = p.sub('', star_version)
+    star_version_specific_folder = f'{star_folder}/v{star_version}'
+
+    if not os.path.exists(star_version_specific_folder):
         # Determine the --genomeSAindexNbases value
         # Documentation recommends: min(14, log2(GenomeLength)/2 - 1)
         genomeSAindexNbases = (math.log2(genome_size) / 2) - 1
@@ -289,8 +301,8 @@ def make_star_index(star_folder, fasta_folder, gtf_folder, species, assembly, re
 
         print(f'Genome size is {genome_size}, so setting --genomeSAindexNbases to {genomeSAindexNbases}')
         
-        os.makedirs(star_folder)
-        os.chdir(star_folder)
+        os.makedirs(star_version_specific_folder)
+        os.chdir(star_version_specific_folder)
 
         fasta_files = glob.glob(f'{fasta_folder}/*.nextflow.genome.fa')
         fasta_files = ' '.join(fasta_files)
@@ -307,7 +319,7 @@ def make_star_index(star_folder, fasta_folder, gtf_folder, species, assembly, re
         os.system(command)
 
     else:
-        print('Skipping - STAR folder already exists: ' + star_folder)
+        print('Skipping - STAR folder already exists: ' + star_version_specific_folder)
 
 
 
