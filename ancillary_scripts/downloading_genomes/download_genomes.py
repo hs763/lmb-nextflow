@@ -175,8 +175,8 @@ def make_bowtie2_index(bowtie2_folder, fasta_folder, species, assembly, release)
 
     # Make a bowtie subfolder for this specific version of Bowtie2
     command = 'bowtie2-build --version | head -1'
-    bowtie_version = subprocess.getoutput(command).split(' ')[-1]
-    bowtie2_version_specific_folder = f'{bowtie2_folder}/v{bowtie_version}'
+    bowtie2_version = subprocess.getoutput(command).split(' ')[-1]
+    bowtie2_version_specific_folder = f'{bowtie2_folder}/v{bowtie2_version}'
 
     if not os.path.exists(bowtie2_version_specific_folder):
         os.chdir(fasta_folder)
