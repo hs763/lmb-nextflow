@@ -70,11 +70,16 @@ folder_names = {        #To standardise folder names throughout code
                 'parse' : 'Indices/Parse_index'
                 }
 
+# Automatically generate subfolder names
+folder_names['fasta_genome'] = folder_names['fasta'] + '/genome'
+folder_names['fasta_cdna'] = folder_names['fasta'] + '/cdna'
+folder_names['fasta_nextflow_genome'] = folder_names['fasta'] + '/fasta_nextflow_genome'
+
 
 ####################################
 # download_ensembl_fasta
 ####################################
-def download_ensembl_fasta(species, assembly, release):
+def download_ensembl_fasta(species, assembly, release, release_outsubdir):
     print('Downloading FASTA files: ' + species + ' ' + assembly + ' (' + str(release) + ')')
 
     ensembl_base = 'http://ftp.ensembl.org/pub/release-'
@@ -122,10 +127,11 @@ def download_ensembl_fasta(species, assembly, release):
     command = f'cat {fasta_files_downloaded} > {combined_fasta_file}'
     os.system(command)
 
-    # Move file(s) to temporary folder
-    #print('Combining original FASTA files into temporary FASTA folder ' + temporary_fasta_folder)
-    #command = f'mv {fasta_files_downloaded} {temporary_fasta_folder}'
-    #os.system(command)
+    # Move file(s)
+    command = f'mv {combined_fasta_file} {release_outsubdir}/{folder_names["fasta_nextflow_genome"]}'
+    os.system(command)
+    command = f'mv original_nextflow_fasta_files_list.txt {release_outsubdir}/{folder_names["fasta_nextflow_genome"]}'
+    os.system(command)
 
 
 ####################################
@@ -506,11 +512,18 @@ def main():
 
         # Download FASTA
         fasta_folder = release_outsubdir + f"/{folder_names['fasta']}/"
+        fasta_genome_folder = release_outsubdir + f"/{folder_names['fasta_genome']}/"
+        fasta_cdna_folder = release_outsubdir + f"/{folder_names['fasta_cdna']}/"
+        fasta_nextflow_genome_folder = release_outsubdir + f"/{folder_names['fasta_nextflow_genome']}/"
 
         if not os.path.exists(fasta_folder):
             os.makedirs(fasta_folder)
-            os.chdir(fasta_folder)
-            download_ensembl_fasta(species, assembly, release)
+            os.makedirs(fasta_genome_folder)
+            os.makedirs(fasta_cdna_folder)
+            os.makedirs(fasta_nextflow_genome_folder)
+            os.chdir(fasta_genome_folder)
+            download_ensembl_fasta(species, assembly, release, release_outsubdir)
+            os.chdir(fasta_cdna_folder)
             download_ensembl_fasta_cdna(species, assembly, release)
             #os.system('gunzip *.fa.gz')
         else:
@@ -532,32 +545,32 @@ def main():
         # Build Bowtie2 index files
         if(genomes_to_download_metadata['bowtie2']):
             bowtie2_folder = release_outsubdir + f"/{folder_names['bowtie2']}/"
-            make_bowtie2_index(bowtie2_folder, fasta_folder, species, assembly, release)
+            make_bowtie2_index(bowtie2_folder, fasta_nextflow_genome_folder, species, assembly, release)
 
 
         # Build HISAT2 index files
         if(genomes_to_download_metadata['hisat2']):
             hisat2_folder = release_outsubdir + f"/{folder_names['hisat2']}/"
-            make_hisat2_index(hisat2_folder, fasta_folder, gtf_folder, species, assembly, release)
+            make_hisat2_index(hisat2_folder, fasta_nextflow_genome_folder, gtf_folder, species, assembly, release)
 
 
         # Build STAR index files
         if(genomes_to_download_metadata['star']):
             star_folder = release_outsubdir + f"/{folder_names['star']}/"
-            genome_size = determine_genome_size(fasta_folder)
-            make_star_index(star_folder, fasta_folder, gtf_folder, species, assembly, release, genome_size)
+            genome_size = determine_genome_size(fasta_nextflow_genome_folder)
+            make_star_index(star_folder, fasta_nextflow_genome_folder, gtf_folder, species, assembly, release, genome_size)
 
         
         # Create HiCUP digest files
         if(genomes_to_download_metadata['hicup']):
             hicup_folder = release_outsubdir + f"/{folder_names['hicup']}/"
-            make_hicup_digest_files(hicup_folder, fasta_folder, species, assembly, release)
+            make_hicup_digest_files(hicup_folder, fasta_nextflow_genome_folder, species, assembly, release)
 
 
         # Build Parse index files
         if(genomes_to_download_metadata['parse']):
             parse_folder = release_outsubdir + f"/{folder_names['parse']}/"
-            make_parse_index(parse_folder, fasta_folder, gtf_folder, species, assembly, release)
+            make_parse_index(parse_folder, fasta_nextflow_genome_folder, gtf_folder, species, assembly, release)
         
 
     # Make overview file to be used in the config file
