@@ -39,6 +39,7 @@ The following are / maybe needed in path for this script to run:
            STAR,
            hicup_digester,
            gzip
+           faSize
                                 
                                  
 For making the Parse genome a conda environment will need to be activated (
@@ -451,7 +452,14 @@ def make_overview_file(genomes_to_download_list):
     return(genome_overview_text)
 
 
-
+####################################
+# calc_csome_sizes
+####################################
+def calc_csome_sizes(folder):
+    command = f'faSize -detailed {folder}/*.fa > {folder}/chromosome.sizes.txt'
+    print('#########################################')
+    print(command)
+    os.system(command)
 
 
 ####################################
@@ -523,6 +531,8 @@ def main():
             os.makedirs(fasta_nextflow_genome_folder)
             os.chdir(fasta_genome_folder)
             download_ensembl_fasta(species, assembly, release, release_outsubdir)
+            calc_csome_sizes(fasta_genome_folder)
+            calc_csome_sizes(fasta_nextflow_genome_folder)
             os.chdir(fasta_cdna_folder)
             download_ensembl_fasta_cdna(species, assembly, release)
             #os.system('gunzip *.fa.gz')
