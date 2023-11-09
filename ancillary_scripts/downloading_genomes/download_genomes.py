@@ -457,9 +457,20 @@ def make_overview_file(genomes_to_download_list):
 ####################################
 def calc_csome_sizes(folder):
     command = f'faSize -detailed {folder}/*.fa > {folder}/chromosome.sizes.txt'
-    print('#########################################')
-    print(command)
     os.system(command)
+
+
+####################################
+# download_bed - add BED files here, this is an empty folder at present
+####################################
+def download_bed(bed_folder):
+    
+    if not os.path.exists(bed_folder):
+        os.makedirs(bed_folder)
+
+    else:
+        print('Skipping - BED folder already exists: ' + bed_folder)
+
 
 
 ####################################
@@ -481,6 +492,8 @@ def calc_csome_sizes(folder):
 #     effective_genome_size = int(effective_genome_size)
 
 #     return(effective_genome_size)
+
+
 
 
 
@@ -582,6 +595,11 @@ def main():
             parse_folder = release_outsubdir + f"/{folder_names['parse']}/"
             make_parse_index(parse_folder, fasta_nextflow_genome_folder, gtf_folder, species, assembly, release)
         
+
+        # Make BED folder - add BED files here, this is an empty folder at present
+        bed_folder = f'{release_outsubdir}/BED'
+        download_bed(bed_folder)
+
 
     # Make overview file to be used in the config file
     genome_overview_text = make_overview_file(genomes_to_download_list)
