@@ -1,40 +1,38 @@
-#sudo docker build -f qc_cell.Dockerfile -t qc_cell .
+#sudo docker build --no-cache -f qc_cell.Dockerfile -t qc_cell .
 #docker run -v $PWD:/mnt --name qc_cell -d -i -t qc_cell /bin/bash
 #docker exec -it qc_cell bash
+#
+#
+# docker tag 17b6aaf0b231 swingett/qc_cell:v0.2
+# docker push swingett/qc_cell:v0.2
 
 
-FROM ubuntu:mantic-20230807.1
-
+FROM ubuntu:jammy-20231004
 
 LABEL image.author.name "Steven Wingett"
 
 SHELL ["/bin/bash", "-c"]
 
-RUN apt update -y
+ENV DEBIAN_FRONTEND=noninteractive 
 
 RUN apt update -y
 
-RUN apt install r-base=4.3.1-4 -y
-RUN apt install r-base-dev=4.3.1-4 -y
-
-RUN apt install curl=8.2.1-1ubuntu2 -y
-RUN apt install apt-show-versions=0.22.14 -y
-RUN apt install libssl-dev=3.0.10-1ubuntu2 -y
-RUN apt install libcurl4-openssl-dev=8.2.1-1ubuntu2 -y
-
-RUN apt install libxml2-dev=2.9.14+dfsg-1.3 -y
-RUN apt install libfontconfig1-dev=2.14.2-4ubuntu1 -y 
-
-RUN apt install libharfbuzz-dev=8.0.1-1 -y
-RUN apt install libfribidi-dev=1.0.13-3 -y
-
-RUN apt install libfreetype6-dev=2.13.1+dfsg-1 -y
-RUN apt install libpng-dev=1.6.40-1 -y
-RUN apt install libtiff5-dev=4.5.1+git230720-1ubuntu1 -y
-RUN apt install libjpeg-dev=8c-2ubuntu11 -y
-
-RUN apt install libcairo2-dev=1.17.8-2 -y
-
+RUN apt install r-base=4.1.2-1ubuntu2  -y
+RUN apt install r-base-dev=4.1.2-1ubuntu2 -y
+RUN apt install curl=7.81.0-1ubuntu1.14 -y
+RUN apt install apt-show-versions=0.22.13 -y
+RUN apt install libssl-dev=3.0.2-0ubuntu1.12 -y
+RUN apt install libcurl4-openssl-dev=7.81.0-1ubuntu1.14 -y
+RUN apt install libxml2-dev=2.9.13+dfsg-1ubuntu0.3 -y
+RUN apt install libfontconfig1-dev=2.13.1-4.2ubuntu5 -y 
+RUN apt install libharfbuzz-dev=2.7.4-1ubuntu3.1 -y
+RUN apt install libfribidi-dev=1.0.8-2ubuntu3.1 -y
+RUN apt install libfreetype6-dev=2.11.1+dfsg-1ubuntu0.2 -y
+RUN apt install libpng-dev=1.6.37-3build5 -y
+RUN apt install libtiff5-dev=4.3.0-6ubuntu0.7 -y
+RUN apt install libjpeg-dev=8c-2ubuntu10 -y
+RUN apt install libcairo2-dev=1.16.0-5ubuntu2 -y
+RUN apt install libmagick++-dev=8:6.9.11.60+dfsg-1.3ubuntu0.22.04.3 -y
 
 
 # library(tidyverse)
@@ -50,8 +48,8 @@ RUN Rscript -e 'install.packages("viridis", version="0.6.4")'
 
 # library(biomaRt)
 RUN Rscript -e 'install.packages("BiocManager", version="1.30.22")'
-RUN Rscript -e 'BiocManager::install(version = "3.17")'
-RUN Rscript -e 'BiocManager::install("biomaRt", version = "3.17")'
+RUN Rscript -e 'BiocManager::install(version = "3.14")'
+RUN Rscript -e 'BiocManager::install("biomaRt", version = "3.14")'
  
 # library(irlba)
 RUN Rscript -e 'install.packages("irlba", version="2.3.5.1")'
@@ -62,25 +60,33 @@ RUN Rscript -e 'install.packages("Rtsne", version="0.16")'
 # library(Matrix)
 RUN Rscript -e 'install.packages("Matrix", version="1.6.1")'
 
-
 # library(reticulate)
 RUN Rscript -e 'install.packages("reticulate", version="1.31")'
 
 # library(umap)
 RUN Rscript -e 'install.packages("umap", version="0.2.10.0")'
 
-
-
 # library(scDblFinder)
 RUN Rscript -e 'install.packages("Cairo", version="1.6.1")'
 RUN Rscript -e 'install.packages("ggrastr", version="1.0.2")'
-RUN Rscript -e 'BiocManager::install("scater", version = "3.17")'
-RUN Rscript -e 'BiocManager::install("scDblFinder", version = "3.17")'
-
+RUN Rscript -e 'BiocManager::install("scater", version = "3.14")'
+RUN Rscript -e 'BiocManager::install("scDblFinder", version = "3.14")'
 
 # library(rlist)
 RUN Rscript -e 'install.packages("rlist", version="0.4.6.2")'
 
+# library celda
+RUN Rscript -e 'install.packages("assertive.base", version="0.0.9")'
+RUN Rscript -e 'install.packages("assertive.files", version="0.0.2")'
+RUN Rscript -e 'install.packages("assertive.numbers", version="0.0.2")'
+RUN Rscript -e 'install.packages("https://cran.r-project.org/src/contrib/Archive/assertive.properties/assertive.properties_0.0-5.tar.gz")'
+RUN Rscript -e 'install.packages("https://cran.r-project.org/src/contrib/Archive/assertive.types/assertive.types_0.0-3.tar.gz")'
+RUN Rscript -e 'install.packages("gridGraphics", version="0.5.1")'
+RUN Rscript -e 'install.packages("magick", version="2.8.1")'
+RUN Rscript -e 'install.packages("https://cran.r-project.org/src/contrib/Archive/multipanelfigure/multipanelfigure_2.1.2.tar.gz")'
+RUN Rscript -e 'BiocManager::install("celda", version = "3.14")'
+
+#######################
 
 # library(BiocParallel)
 #RUN Rscript -e 'BiocManager::install("BiocParallel", version = "3.17")'
