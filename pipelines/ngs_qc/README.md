@@ -8,21 +8,34 @@ Notes on building the associated containers:
 
 FastQC
 (This is for a writable version, but that is actually not necessary)
+
 sudo singularity build --sandbox  biocontainers_fastqc_v0.11.9_cv8 docker://biocontainers/fastqc:v0.11.9_cv8
-sudo singularity shell --writable --bind /mnt:$PWD biocontainers_fastqc_v0.11.9_cv8
+
+sudo singularity shell --writable --bind $PWD:/mnt biocontainers_fastqc_v0.11.9_cv8
 
 
 
 Inside a container install Bowtie2:
 cd /usr/local/bin/
+
 wget https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.5.1/bowtie2-2.5.1-linux-x86_64.zip  --no-check-certificate
+
 unzip bowtie2-2.5.1-linux-x86_64
+
 ln -s bowtie2-2.5.1-linux-x86_64/bowtie2
 
+
 Inside a container install FastQ Screen:
+
 wget https://github.com/StevenWingett/FastQ-Screen/archive/refs/tags/v0.15.3.tar.gz --no-check-certificate
+
 tar xvzf v0.15.3.tar.gz
+
 ln -s FastQ-Screen-0.15.3/fastq_screen
+
+Install samtools, as this is useful for other applications
+
+apt install samtools=0.1.19-96b5f2294a
 
 exit
 
