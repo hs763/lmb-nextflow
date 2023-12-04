@@ -100,3 +100,6 @@ RUN Rscript -e 'BiocManager::install("celda", version = "3.14")'
 #RUN Rscript -e 'BiocManager::install("SingleCellExperiment", version = "3.17")'
 #RUN Rscript -e 'BiocManager::install("scuttle", version = "3.17")'
 #RUN Rscript -e 'BiocManager::install("scran", version = "3.17")'
+
+# library(Seurat)
+#RUN Rscript -e 'packageVersion("Seurat", version="5.0.1")'
