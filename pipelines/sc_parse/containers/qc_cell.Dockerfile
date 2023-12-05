@@ -3,7 +3,7 @@
 #docker exec -it qc_cell bash
 #
 #
-# docker tag 17b6aaf0b231 swingett/qc_cell:v0.2
+# docker tag  d2c30b008c7f swingett/qc_cell:v0.2
 # docker push swingett/qc_cell:v0.2
 
 
@@ -35,58 +35,54 @@ RUN apt install libcairo2-dev=1.16.0-5ubuntu2 -y
 RUN apt install libmagick++-dev=8:6.9.11.60+dfsg-1.3ubuntu0.22.04.3 -y
 
 
-# library(devtools)
-#RUN Rscript -e 'install.packages("devtools")'
-RUN Rscript -e 'install.packages("https://cran.r-project.org/src/contrib/devtools_2.4.5.tar.gz")'
-
 # library(tidyverse)
-RUN Rscript -e 'devtools::install_version("xml2", version="1.3.5", repos = "http://cran.us.r-project.org")'
-RUN Rscript -e 'devtools::install_version("systemfonts", version="1.0.4", repos = "http://cran.us.r-project.org")'
-RUN Rscript -e 'devtools::install_version("textshaping", version="0.3.6", repos = "http://cran.us.r-project.org")'
-RUN Rscript -e 'devtools::install_version("ragg", version="1.2.5", repos = "http://cran.us.r-project.org")'
-RUN Rscript -e 'devtools::install_version("rvest", version="1.0.3", repos = "http://cran.us.r-project.org")'
-RUN Rscript -e 'devtools::install_version("tidyverse", version="2.0.0", repos = "http://cran.us.r-project.org")' 
+RUN Rscript -e 'install.packages("xml2", version="1.3.5")'
+RUN Rscript -e 'install.packages("systemfonts", version="1.0.4")'
+RUN Rscript -e 'install.packages("textshaping", version="0.3.6")'
+RUN Rscript -e 'install.packages("ragg", version="1.2.5")'
+RUN Rscript -e 'install.packages("rvest", version="1.0.3")'
+RUN Rscript -e 'install.packages("tidyverse", version="2.0.0")' 
 
 # library(viridis)
-RUN Rscript -e 'devtools::install_version("viridis", version="0.6.4", repos = "http://cran.us.r-project.org")'
+RUN Rscript -e 'install.packages("viridis", version="0.6.4")'
 
 # library(biomaRt)
-RUN Rscript -e 'devtools::install_version("BiocManager", version="1.30.22", repos = "http://cran.us.r-project.org")'
+RUN Rscript -e 'install.packages("BiocManager", version="1.30.22")'
 RUN Rscript -e 'BiocManager::install(version = "3.14")'
 RUN Rscript -e 'BiocManager::install("biomaRt", version = "3.14")'
  
 # library(irlba)
-RUN Rscript -e 'devtools::install_version("irlba", version="2.3.5.1", repos = "http://cran.us.r-project.org")'
+RUN Rscript -e 'install.packages("irlba", version="2.3.5.1")'
 
 # library(Rtsne)
-RUN Rscript -e 'devtools::install_version("Rtsne", version="0.16", repos = "http://cran.us.r-project.org")'
+RUN Rscript -e 'install.packages("Rtsne", version="0.16")'
 
 # library(Matrix)
-RUN Rscript -e 'devtools::install_version("Matrix", version="1.6.1", repos = "http://cran.us.r-project.org")'
+RUN Rscript -e 'install.packages("Matrix", version="1.6.1")'
 
 # library(reticulate)
-RUN Rscript -e 'devtools::install_version("reticulate", version="1.31", repos = "http://cran.us.r-project.org")'
+RUN Rscript -e 'install.packages("reticulate", version="1.31")'
 
 # library(umap)
-RUN Rscript -e 'devtools::install_version("umap", version="0.2.10.0", repos = "http://cran.us.r-project.org")'
+RUN Rscript -e 'install.packages("umap", version="0.2.10.0")'
 
 # library(scDblFinder)
-RUN Rscript -e 'devtools::install_version("Cairo", version="1.6.1", repos = "http://cran.us.r-project.org")'
-RUN Rscript -e 'devtools::install_version("ggrastr", version="1.0.2", repos = "http://cran.us.r-project.org")'
+RUN Rscript -e 'install.packages("Cairo", version="1.6.1")'
+RUN Rscript -e 'install.packages("ggrastr", version="1.0.2")'
 RUN Rscript -e 'BiocManager::install("scater", version = "3.14")'
 RUN Rscript -e 'BiocManager::install("scDblFinder", version = "3.14")'
 
 # library(rlist)
-RUN Rscript -e 'devtools::install_version("rlist", version="0.4.6.2", repos = "http://cran.us.r-project.org")'
+RUN Rscript -e 'install.packages("rlist", version="0.4.6.2")'
 
 # library celda
-RUN Rscript -e 'devtools::install_version("assertive.base", version="0.0.9", repos = "http://cran.us.r-project.org")'
-RUN Rscript -e 'devtools::install_version("assertive.files", version="0.0.2", repos = "http://cran.us.r-project.org")'
-RUN Rscript -e 'devtools::install_version("assertive.numbers", version="0.0.2", repos = "http://cran.us.r-project.org")'
+RUN Rscript -e 'install.packages("assertive.base", version="0.0.9")'
+RUN Rscript -e 'install.packages("assertive.files", version="0.0.2")'
+RUN Rscript -e 'install.packages("assertive.numbers", version="0.0.2")'
 RUN Rscript -e 'install.packages("https://cran.r-project.org/src/contrib/Archive/assertive.properties/assertive.properties_0.0-5.tar.gz")'
 RUN Rscript -e 'install.packages("https://cran.r-project.org/src/contrib/Archive/assertive.types/assertive.types_0.0-3.tar.gz")'
-RUN Rscript -e 'devtools::install_version("gridGraphics", version="0.5.1")'
-RUN Rscript -e 'devtools::install_version("magick", version="2.8.1")'
+RUN Rscript -e 'install.packages("gridGraphics", version="0.5.1")'
+RUN Rscript -e 'install.packages("magick", version="2.8.1")'
 RUN Rscript -e 'install.packages("https://cran.r-project.org/src/contrib/Archive/multipanelfigure/multipanelfigure_2.1.2.tar.gz")'
 RUN Rscript -e 'BiocManager::install("celda", version = "3.14")'
 
@@ -97,7 +93,7 @@ RUN Rscript -e 'BiocManager::install("celda", version = "3.14")'
 
 
 # library(scran)
-#RUN Rscript -e 'install_version("RCurl", version="1.98.1.12")'
+#RUN Rscript -e 'install.packages("RCurl", version="1.98.1.12")'
 #RUN Rscript -e 'BiocManager::install("GenomeInfoDb", version = "3.17")'
 #RUN Rscript -e 'BiocManager::install("GenomicRanges", version = "3.17")'
 #RUN Rscript -e 'BiocManager::install("SummarizedExperiment", version = "3.17")'
