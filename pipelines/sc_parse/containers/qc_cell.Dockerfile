@@ -36,8 +36,9 @@ RUN apt install libmagick++-dev=8:6.9.11.60+dfsg-1.3ubuntu0.22.04.3 -y
 
 
 # library(devtools)
-#RUN Rscript -e 'install.packages("devtools")'
-RUN Rscript -e 'install.packages("https://cran.r-project.org/src/contrib/devtools_2.4.5.tar.gz")'
+RUN Rscript -e 'install.packages("devtools")'
+RUN Rscript -e 'devtools::install_version("devtools", version="2.4.5", repos = "http://cran.us.r-project.org")'
+#RUN Rscript -e 'install.packages("https://cran.r-project.org/src/contrib/devtools_2.4.5.tar.gz")'
 
 # library(tidyverse)
 RUN Rscript -e 'devtools::install_version("xml2", version="1.3.5", repos = "http://cran.us.r-project.org")'
@@ -104,3 +105,4 @@ RUN Rscript -e 'BiocManager::install("celda", version = "3.14")'
 #RUN Rscript -e 'BiocManager::install("SingleCellExperiment", version = "3.17")'
 #RUN Rscript -e 'BiocManager::install("scuttle", version = "3.17")'
 #RUN Rscript -e 'BiocManager::install("scran", version = "3.17")'
+
