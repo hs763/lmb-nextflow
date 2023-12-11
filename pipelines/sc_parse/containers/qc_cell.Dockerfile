@@ -3,10 +3,10 @@
 #docker exec -it qc_cell bash
 #
 #
-# docker tag 17b6aaf0b231 swingett/qc_cell:v0.2
-# docker push swingett/qc_cell:v0.2
+# docker tag d2c30b008c7f swingett/qc_cell:v0.3
+# docker push swingett/qc_cell:v0.3
 
-
+17b6aaf0b231 
 FROM ubuntu:jammy-20231004
 
 LABEL image.author.name "Steven Wingett"
@@ -46,7 +46,7 @@ RUN Rscript -e 'devtools::install_version("systemfonts", version="1.0.4", repos 
 RUN Rscript -e 'devtools::install_version("textshaping", version="0.3.6", repos = "http://cran.us.r-project.org")'
 RUN Rscript -e 'devtools::install_version("ragg", version="1.2.5", repos = "http://cran.us.r-project.org")'
 RUN Rscript -e 'devtools::install_version("rvest", version="1.0.3", repos = "http://cran.us.r-project.org")'
-RUN Rscript -e 'devtools::install_version("tidyverse", version="2.0.0", repos = "http://cran.us.r-project.org")' 
+RUN Rscript -e 'devtools::install_version("tidyverse", version="2.0.0", repos = "http://cran.us.r-project.org")'
 
 # library(viridis)
 RUN Rscript -e 'devtools::install_version("viridis", version="0.6.4", repos = "http://cran.us.r-project.org")'
@@ -90,6 +90,10 @@ RUN Rscript -e 'devtools::install_version("gridGraphics", version="0.5.1")'
 RUN Rscript -e 'devtools::install_version("magick", version="2.8.1")'
 RUN Rscript -e 'install.packages("https://cran.r-project.org/src/contrib/Archive/multipanelfigure/multipanelfigure_2.1.2.tar.gz")'
 RUN Rscript -e 'BiocManager::install("celda", version = "3.14")'
+
+# library(leiden)
+RUN Rscript -e 'devtools::install_version("leiden", version="0.4.3.1", repos = "http://cran.us.r-project.org")'
+
 
 #######################
 
