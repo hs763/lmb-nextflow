@@ -19,10 +19,10 @@ RUN apt update -y
 
 RUN apt install r-base=4.1.2-1ubuntu2  -y
 RUN apt install r-base-dev=4.1.2-1ubuntu2 -y
-RUN apt install curl=7.81.0-1ubuntu1.14 -y
+RUN apt install curl=7.81.0-1ubuntu1.15 -y
 RUN apt install apt-show-versions=0.22.13 -y
 RUN apt install libssl-dev=3.0.2-0ubuntu1.12 -y
-RUN apt install libcurl4-openssl-dev=7.81.0-1ubuntu1.14 -y
+RUN apt install libcurl4-openssl-dev=7.81.0-1ubuntu1.15 -y
 RUN apt install libxml2-dev=2.9.13+dfsg-1ubuntu0.3 -y
 RUN apt install libfontconfig1-dev=2.13.1-4.2ubuntu5 -y 
 RUN apt install libharfbuzz-dev=2.7.4-1ubuntu3.1 -y
